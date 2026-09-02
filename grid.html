@@ -47,6 +47,14 @@ input{font:inherit; color:inherit}
 .tab:hover{color:var(--ink); background:var(--soft)}
 .tab.on{color:var(--accent-dark); border-bottom-color:var(--accent)}
 .tab .dot{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--win); margin-left:7px; vertical-align:1px}
+.tab.now{color:#1B5FC0; background:#E8F1FD}
+.tab.now:hover{color:#14498F; background:#DCE9FB}
+.tab .nowtag{
+  display:inline-block; margin-left:8px; padding:3px 8px; border-radius:99px;
+  background:#1B5FC0; color:#fff; font-size:10px; font-weight:800; letter-spacing:.09em; text-transform:uppercase;
+  vertical-align:1px;
+}
+.tab.season{margin-left:auto; padding-left:22px}
 
 /* controls */
 .controls{background:var(--card); border-radius:26px; box-shadow:var(--shadow); padding:20px 22px;
@@ -69,7 +77,10 @@ input{font:inherit; color:inherit}
 .banner{display:none; align-items:center; gap:16px; margin-top:16px; padding:18px 24px;
   background:var(--win-bg); border-radius:24px; border:2px solid var(--win)}
 .banner.on{display:flex}
-.banner .cup{font-size:26px; line-height:1}
+.banner .cup{
+  font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--win-ink); background:#fff; border:2px solid var(--win); border-radius:99px; padding:5px 12px;
+}
 .banner b{font-size:19px; font-weight:800; letter-spacing:-.02em; color:var(--win-ink)}
 .banner span{color:var(--win-ink); font-size:15px; opacity:.85}
 
@@ -147,8 +158,6 @@ tfoot .c-rank,tfoot .c-team{background:var(--soft)}
 tbody tr.champ td{background:var(--win-bg)}
 tbody tr.champ .c-rank,tbody tr.champ .c-team,tbody tr.champ td.c-score{background:var(--win-bg)}
 tbody tr.champ .rank,tbody tr.champ .who b,tbody tr.champ .score{color:var(--win-ink)}
-tbody tr.champ .who b::after{content:" \1F3C6"; font-size:13px}
-table.stand tbody tr.champ .who b::after{content:none}
 tbody tr.champ .cell{background:#fff}
 tbody tr.champ .cell.hit{background:var(--hit-bg)}
 tbody tr.champ .cell.miss{background:#F4EEDC}
@@ -165,7 +174,6 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 .wonc{width:96px; min-width:96px; border-left:2px solid var(--line)}
 .won{font-weight:800; font-size:18px; font-variant-numeric:tabular-nums}
 .won.zero{color:var(--ink-3); font-weight:600; font-size:15px}
-.medal{font-size:15px; margin-left:5px}
 
 .legend{display:flex; gap:24px; flex-wrap:wrap; margin-top:20px; color:var(--ink-2); font-size:14px; font-weight:600}
 .legend span{display:flex; align-items:center; gap:9px}
@@ -249,7 +257,16 @@ WEEKS.forEach(w=>{
   w.sampleActual = 41 + w.n*3;
 });
 
-let tab = 'season';           /* 'season' or a week number */
+/* A week stays "now" until its last game is done, roughly 36 hours past the
+   deadline, which covers the Sunday afternoon games through Monday night. */
+WEEKS.forEach(w=>{ w.ends = new Date(w.deadline.getTime() + 36*3600*1000); });
+function currentWeekN(){
+  const now = Date.now();
+  const w = WEEKS.find(x => now < x.ends.getTime());
+  return w ? w.n : WEEKS[WEEKS.length-1].n;
+}
+
+let tab = currentWeekN();     /* 'season' or a week number */
 let preview = false;          /* mock-up only: show the season as if it had been played */
 
 const revealed = w => preview || Date.now() >= w.deadline.getTime();
@@ -290,11 +307,15 @@ function seasonRows(){
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
 function drawTabs(){
+  const cur = currentWeekN();
   document.getElementById('tabs').innerHTML =
-    '<button class="tab'+(tab==='season'?' on':'')+'" data-tab="season" type="button">Season standings</button>'
-    + WEEKS.map(w =>
-        '<button class="tab'+(tab===w.n?' on':'')+'" data-tab="'+w.n+'" type="button">'+w.label
-        + (weekWinner(w) ? '<span class="dot" title="Week decided"></span>' : '') + '</button>').join('');
+    WEEKS.map(w =>
+      '<button class="tab'+(tab===w.n?' on':'')+(w.n===cur?' now':'')+'" data-tab="'+w.n+'" type="button">'
+      + w.label
+      + (w.n===cur ? '<span class="nowtag">Now</span>' : '')
+      + (weekWinner(w) ? '<span class="dot" title="Week decided"></span>' : '')
+      + '</button>').join('')
+    + '<button class="tab season'+(tab==='season'?' on':'')+'" data-tab="season" type="button">Season standings</button>';
 }
 
 function seasonView(){
@@ -308,7 +329,6 @@ function seasonView(){
     + '<div class="stat"><span>Weeks played</span><b>'+WEEKS.filter(w=>revealed(w)&&called(w)).length+' of '+WEEKS.length+'</b></div>'
     + '<div class="stat lead"><span>Leading</span><b>'+(any?esc(rows[0].e.team):'&mdash;')+'</b></div>';
 
-  const medal = ['🥇','🥈','🥉'];
   let html = '<div class="controls"><div class="controls__lead">The season so far'
     + '<span>Open a week above to see the picks behind these numbers.</span></div><div class="spacer"></div>'
     + '<button class="btn" id="preview">'+(preview?'Back to the real table':'Preview a played season')+'</button></div>';
@@ -322,7 +342,7 @@ function seasonView(){
         const champ = any && idx===0;
         return '<tr'+(champ?' class="champ"':'')+'>'
           + '<td class="c-rank"><span class="rank">'+(idx+1)+'</span>'
-          + (any && idx<3 ? '<span class="medal">'+medal[idx]+'</span>' : '') + '</td>'
+ + '</td>'
           + '<td class="c-team"><div class="who"><b>'+esc(r.e.team)+'</b><span>'+esc(r.e.who)+'</span></div></td>'
           + r.per.map((v,wi)=>{
               if(v===null) return '<td class="wkcol"><span class="wk none">&mdash;</span></td>';
@@ -370,7 +390,7 @@ function weekView(w){
 
   if(c === w.games.length){
     const level = rows.filter(r => r.s === rows[0].s);
-    html += '<div class="banner on"><span class="cup">🏆</span><div><b>'+esc(rows[0].e.team)+'</b> <span>'
+    html += '<div class="banner on"><span class="cup">Winner</span><div><b>'+esc(rows[0].e.team)+'</b> <span>'
       + (win ? (level.length>1
             ? 'wins '+w.label+' on the tiebreaker — '+rows[0].s+' correct, '+rows[0].o+' off the Game of the Week total.'
             : 'wins '+w.label+' with '+rows[0].s+' correct out of '+w.games.length+'.')
