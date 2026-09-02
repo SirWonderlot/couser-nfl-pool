@@ -24,6 +24,18 @@ input{font:inherit; color:inherit}
 :focus-visible{outline:3px solid var(--accent); outline-offset:3px}
 .wrap{max-width:1140px; margin:0 auto; padding:0 18px 110px}
 
+/* ---------- top navigation ---------- */
+.topnav{background:var(--card); border-bottom:1px solid var(--line)}
+.topnav__in{margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+.brand{font-weight:800; font-size:14.5px; letter-spacing:-.015em}
+.brand em{font-style:normal; color:var(--ink-3); font-weight:600}
+.navlinks{margin-left:auto; display:flex; gap:8px}
+.navlink{text-decoration:none; font-weight:700; font-size:14.5px; color:var(--ink-2);
+  padding:9px 16px; border-radius:99px; border:2px solid transparent}
+.navlink:hover{background:var(--soft); color:var(--ink)}
+.navlink.on{background:var(--accent-soft); color:var(--accent-dark); border-color:var(--accent)}
+@media(max-width:540px){ .navlink{padding:8px 13px; font-size:13.5px} .brand{font-size:13.5px} }
+
 /* ---------- masthead ---------- */
 .mast{background:var(--card); border-bottom:1px solid var(--line)}
 .mast__in{max-width:1140px; margin:0 auto; padding:36px 18px 32px}
@@ -217,13 +229,19 @@ body.closed .go{display:none}
 .receipt li{display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--ink-2); font-weight:600}
 .receipt li img{width:26px; height:26px; border-radius:50%; background:#fff; flex:0 0 auto}
 .receipt li b{color:var(--ink); font-weight:800}
+.receipt__keep{
+  margin-top:16px !important; padding:16px 18px; background:var(--accent-soft); border-radius:18px;
+  color:var(--accent-dark) !important; font-size:15.5px; font-weight:600; max-width:none !important;
+}
+.receipt__keep b{font-weight:800}
 .note-mock{margin-top:22px; padding:14px 16px; background:var(--soft); border-radius:16px; color:var(--ink-3); font-size:13.5px}
 @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
 </style>
 
+<nav class="topnav"><div class="topnav__in" style="max-width:1140px"><span class="brand">Sue Couser&rsquo;s NFL Pool <em>&middot; 2026</em></span><span class="navlinks"><a class="navlink on" href="picks.html">Pick sheet</a><a class="navlink" href="grid.html">Standings</a></span></div></nav>
 <header class="mast">
   <div class="mast__in">
-    <div class="eyebrow">Sue Couser&rsquo;s NFL Pool &middot; 2026</div>
+    <div class="eyebrow">2026 Season</div>
     <h1>Week One</h1>
     <p class="mast__first">First game <b>Wednesday, September 9</b> at <b>8:20 PM ET</b></p>
   </div>
@@ -285,6 +303,7 @@ body.closed .go{display:none}
     <span class="tag">Sent</span>
     <h3 style="font-size:22px">Picks are in</h3>
     <p id="receipt-line"></p>
+    <p class="receipt__keep" id="receipt-keep"></p>
     <ul id="receipt-list"></ul>
     <div class="note-mock">Mock-up note: your entries are kept in this browser, but nothing is sent to the pool yet. Wiring the real submission is the next step.</div>
   </section>
@@ -406,8 +425,11 @@ go.addEventListener('click',()=>{
     return '<li><img src="'+LOGOS[ab]+'" alt=""><b>'+TEAMS[ab].n+'</b> over '+TEAMS[ab===g.a?g.h:g.a].n+'</li>';
   }).join('');
   document.getElementById('receipt-line').textContent=
-    document.getElementById('f-team').value.trim()+' \u2014 '+GAMES.length+' games picked, Game of the Week total of '+tie.value
-    +'. Come back to this page any time before Sunday to change it.';
+    document.getElementById('f-team').value.trim()+' \u2014 '+GAMES.length+' games picked, Game of the Week total of '+tie.value+'.';
+  document.getElementById('receipt-keep').innerHTML=
+    'Nothing else to do. Just come back to this page whenever you like &mdash; your picks will be here, and you can change any game '
+    + 'that has not kicked off right up to <b>'+DEADLINE_TEXT+'</b>. After that they are locked. '
+    + 'Worth bookmarking this page so you can find it again.';
   stash(true);
   const r=document.getElementById('receipt'); r.classList.add('on'); r.scrollIntoView({behavior:'smooth',block:'start'});
 });

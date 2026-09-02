@@ -24,6 +24,18 @@ input{font:inherit; color:inherit}
 :focus-visible{outline:3px solid var(--accent); outline-offset:3px}
 .wrap{max-width:1260px; margin:0 auto; padding:0 18px 90px}
 
+/* ---------- top navigation ---------- */
+.topnav{background:var(--card); border-bottom:1px solid var(--line)}
+.topnav__in{margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+.brand{font-weight:800; font-size:14.5px; letter-spacing:-.015em}
+.brand em{font-style:normal; color:var(--ink-3); font-weight:600}
+.navlinks{margin-left:auto; display:flex; gap:8px}
+.navlink{text-decoration:none; font-weight:700; font-size:14.5px; color:var(--ink-2);
+  padding:9px 16px; border-radius:99px; border:2px solid transparent}
+.navlink:hover{background:var(--soft); color:var(--ink)}
+.navlink.on{background:var(--accent-soft); color:var(--accent-dark); border-color:var(--accent)}
+@media(max-width:540px){ .navlink{padding:8px 13px; font-size:13.5px} .brand{font-size:13.5px} }
+
 /* masthead */
 .mast{background:var(--card); border-bottom:1px solid var(--line)}
 .mast__in{max-width:1260px; margin:0 auto; padding:32px 18px 0; display:flex; gap:24px; align-items:flex-end; flex-wrap:wrap}
@@ -189,10 +201,11 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
 </style>
 
+<nav class="topnav"><div class="topnav__in" style="max-width:1260px"><span class="brand">Sue Couser&rsquo;s NFL Pool <em>&middot; 2026</em></span><span class="navlinks"><a class="navlink" href="test-picks.html">Pick sheet</a><a class="navlink on" href="test-grid.html">Standings</a></span></div></nav>
 <header class="mast">
   <div class="mast__in">
     <div>
-      <div class="eyebrow">Sue Couser&rsquo;s NFL Pool &middot; 2026</div>
+      <div class="eyebrow">2026 Season</div>
       <h1 id="h1">Season standings</h1>
       <p class="mast__sub" id="sub"></p>
     </div>
