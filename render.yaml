@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: couser-nfl-pool
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: DATABASE_URL
+        sync: false      # paste the connection string of a Postgres you already have
+      - key: ADMIN_KEY
+        generateValue: true

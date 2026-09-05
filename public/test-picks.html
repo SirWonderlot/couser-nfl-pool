@@ -1,4 +1,7 @@
 <meta charset="utf-8">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="googlebot" content="noindex, nofollow, noarchive">
 <title>Test Week Pick Sheet</title>
@@ -241,6 +244,7 @@ body.closed .go{display:none}
   color:var(--accent-dark) !important; font-size:15.5px; font-weight:600; max-width:none !important;
 }
 .receipt__card .receipt__keep b{font-weight:800}
+.receipt__card .receipt__keep.warn{background:#FDECEA; color:#8E2C1E !important}
 .note-mock{margin-top:22px; padding:14px 16px; background:var(--soft); border-radius:16px; color:var(--ink-3); font-size:13.5px}
 @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
 .testbar{background:#FFF6DC; border-bottom:2px solid #E9A400; color:#8A6200}
@@ -385,9 +389,57 @@ const GAMES=[
                      g.t = hhmm(T0 + SLOT[i]*HOUR); return g; });
 const picks={};
 
+/* ---- talking to the pool -------------------------------------------------
+   The server decides when picks close and who may see whose sheet. This page
+   only asks. If the pool cannot be reached the sheet still works on its own,
+   it just says so.                                                          */
+const WEEK_N = 0;
+const API = '/api';
+function deviceToken(){
+  try{
+    let t = localStorage.getItem('suecouser.nflpool.device');
+    if(!t){
+      t = (self.crypto && crypto.randomUUID) ? crypto.randomUUID()
+          : Date.now().toString(36) + Math.floor(Math.random()*1e9).toString(36);
+      localStorage.setItem('suecouser.nflpool.device', t);
+    }
+    return t;
+  }catch(e){ return 'anon'; }
+}
+const TOKEN = deviceToken();
+let poolReachable = null;
+
+async function postEntry(e){
+  try{
+    const r = await fetch(API + '/entry', {method:'POST',
+      headers:{'content-type':'application/json'},
+      body: JSON.stringify({week:WEEK_N, token:TOKEN, team:e.team, person:e.name,
+                            email:e.email, phone:e.phone, tie:e.tie, picks:e.picks})});
+    poolReachable = r.ok;
+    if(r.ok) return {ok:true};
+    const j = await r.json().catch(()=>({}));
+    return {ok:false, message: j.message || 'The pool would not take that sheet.'};
+  }catch(err){
+    poolReachable = false;
+    return {ok:false, message:'Could not reach the pool just now.'};
+  }
+}
+async function deleteEntry(team){
+  try{ await fetch(API + '/entry-delete', {method:'POST', headers:{'content-type':'application/json'},
+        body: JSON.stringify({week:WEEK_N, token:TOKEN, team})}); }catch(e){}
+}
+async function fetchWeek(){
+  try{
+    const r = await fetch(API + '/week/' + WEEK_N + '?token=' + encodeURIComponent(TOKEN), {cache:'no-store'});
+    if(!r.ok) return null;
+    poolReachable = true;
+    return await r.json();
+  }catch(e){ poolReachable = false; return null; }
+}
+
 /* A game is fixed once it kicks off, and the whole sheet closes at 1:00 PM ET Sunday.
    Two lines to change each week: this deadline, and the k: on each game above. */
-const DEADLINE = new Date(T0 + 2*HOUR);
+let DEADLINE = new Date('2026-09-13T13:00:00-04:00');
 const DEADLINE_TEXT = hhmm(T0 + 2*HOUR) + ' today';
 const pastDeadline = () => Date.now() >= DEADLINE.getTime();
 const lockAt = g => Math.min(new Date(g.k).getTime(), DEADLINE.getTime());
@@ -472,19 +524,34 @@ document.getElementById('slates').addEventListener('click',e=>{
 });
 ['f-team','f-name','f-email','f-phone','f-tie'].forEach(id=>
   document.getElementById(id).addEventListener('input',()=>{ refresh(); stash(false); }));
-go.addEventListener('click',()=>{
-  document.getElementById('receipt-list').innerHTML=GAMES.map(g=>{
-    const ab=picks[g.id];
+go.addEventListener('click', async ()=>{
+  const label = go.textContent;
+  go.disabled = true; go.textContent = 'Sending\u2026';
+
+  stash(true);                                   /* keep it here first */
+  const active = allEntries().find(x => x.id === activeId);
+  const sent = active ? await postEntry(active)
+                      : {ok:false, message:'There was nothing to send.'};
+  go.textContent = label; refresh(); drawEntries();
+
+  document.getElementById('receipt-list').innerHTML = GAMES.map(g=>{
+    const ab = picks[g.id];
     return '<li><img src="'+LOGOS[ab]+'" alt=""><b>'+TEAMS[ab].n+'</b> over '+TEAMS[ab===g.a?g.h:g.a].n+'</li>';
   }).join('');
-  document.getElementById('receipt-line').textContent=
-    document.getElementById('f-team').value.trim()+' \u2014 '+GAMES.length+' games picked, Game of the Week total of '+tie.value+'.';
-  document.getElementById('receipt-keep').innerHTML=
-    'Nothing else to do. Just come back to this page whenever you like &mdash; your picks will be here, and you can change any game '
-    + 'that has not kicked off right up to <b>'+DEADLINE_TEXT+'</b>. After that they are locked. '
-    + 'Worth bookmarking this page so you can find it again.';
-  stash(true);
-  const r=document.getElementById('receipt'); r.classList.add('on'); r.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('receipt-line').textContent =
+    document.getElementById('f-team').value.trim()+' \u2014 '+GAMES.length
+    +' games picked, Game of the Week total of '+tie.value+'.';
+  const keep = document.getElementById('receipt-keep');
+  keep.className = 'receipt__keep' + (sent.ok ? '' : ' warn');
+  keep.innerHTML = sent.ok
+    ? 'Your sheet is in the pool. Come back to this page whenever you like &mdash; your picks will be here, and any change you make '
+      + 'to a game that has not kicked off goes straight through, right up to <b>' + DEADLINE_TEXT + '</b>. '
+      + 'Worth bookmarking this page so you can find it again.'
+    : '<b>Saved on this device, but it has not reached the pool.</b> ' + sent.message
+      + ' Your picks are safe here &mdash; come back and press Send again before <b>' + DEADLINE_TEXT + '</b>.';
+
+  const r = document.getElementById('receipt');
+  r.classList.add('on'); r.scrollIntoView({behavior:'smooth', block:'start'});
 });
 
 function formNow(){
@@ -507,6 +574,16 @@ function stash(markSent){
   e.updated = Date.now();
   writeEntries(a);
   drawEntries();
+  if(e.sent) queuePush(e);        /* once it is in the pool, changes follow it */
+}
+let pushTimer = null, pushQueue = null;
+function queuePush(e){
+  pushQueue = JSON.parse(JSON.stringify(e));
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(async () => {
+    const e2 = pushQueue; pushQueue = null;
+    if(e2) await postEntry(e2);
+  }, 900);
 }
 function loadEntry(id){
   const e = allEntries().find(x => x.id === id); if(!e) return;
@@ -583,6 +660,8 @@ document.getElementById('entrylist').addEventListener('click', e => {
   window.scrollTo({top:0, behavior:'smooth'});
 });
 document.getElementById('mine-drop').addEventListener('click', () => {
+  const gone = allEntries().find(x => x.id === activeId);
+  if(gone && gone.sent) deleteEntry(gone.team);
   const a = allEntries().filter(x => x.id !== activeId);
   writeEntries(a);
   if(a.length){ loadEntry(a[a.length-1].id); } else { blankEntry(); }
@@ -601,6 +680,35 @@ try {
 const startList = allEntries().sort((x,y) => (y.updated||0) - (x.updated||0));
 if(startList.length) loadEntry(startList[0].id);
 drawEntries();
+
+/* The pool is the record. Pull down whatever it holds for this device and let
+   it win, so a sheet survives a cleared browser or a second visit. */
+(async function syncWithPool(){
+  const info = await fetchWeek();
+  if(!info){ drawEntries(); return; }
+  if(info.deadline){
+    DEADLINE = new Date(info.deadline);
+    const serverT0 = DEADLINE.getTime() - 2*HOUR;
+    if(Math.abs(serverT0 - T0) > 5000){
+      try{ localStorage.setItem(CLOCK_KEY, String(serverT0)); }catch(e){}
+      location.reload(); return;
+    }
+  }
+  const local = allEntries();
+  (info.entries || []).filter(e => e.mine).forEach(srv => {
+    let e = local.find(x => x.team === srv.team);
+    if(!e){ e = {id:newId(), team:srv.team, updated:0}; local.push(e); }
+    if(!e.name) e.name = srv.person || '';
+    if(srv.tie != null) e.tie = String(srv.tie);
+    e.picks = srv.picks || {};
+    e.sent = true;
+  });
+  writeEntries(local);
+  const pick = activeId && local.find(x => x.id === activeId) ? activeId
+             : (local.length ? local.slice().sort((x,y)=>(y.updated||0)-(x.updated||0))[0].id : null);
+  if(pick) loadEntry(pick);
+  refresh(); drawEntries();
+})();
 
 requestAnimationFrame(function(){ requestAnimationFrame(function(){ document.body.classList.add('anim'); }); });
 setInterval(refresh, 20000);   /* so a game locks itself if the page is left open */

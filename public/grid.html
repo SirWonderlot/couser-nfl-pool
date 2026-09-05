@@ -1,7 +1,10 @@
 <meta charset="utf-8">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="googlebot" content="noindex, nofollow, noarchive">
-<title>Test Week Standings</title>
+<title>NFL Pool Standings</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
@@ -202,22 +205,9 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 .pending h2{font-size:24px; font-weight:800; letter-spacing:-.03em}
 .pending p{color:var(--ink-2); margin:8px 0 0; max-width:56ch}
 @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
-.testbar{background:#FFF6DC; border-bottom:2px solid #E9A400; color:#8A6200}
-.testbar__in{max-width:1260px; margin:0 auto; padding:12px 18px; display:flex; gap:16px;
-  align-items:center; flex-wrap:wrap; font-size:14.5px; font-weight:600; line-height:1.45}
-.testbar b{font-weight:800}
-.testbar #clockline{display:block; font-weight:500}
-.testreset{margin-left:auto; font-family:inherit; font-weight:700; font-size:13.5px;
-  background:#fff; color:#8A6200; border:2px solid #E9A400; border-radius:99px; padding:9px 16px; cursor:pointer}
-.testreset:hover{background:#FFEFC0}
 </style>
 
-<nav class="topnav"><div class="topnav__in" style="max-width:1260px"><span class="brand">Sue Couser&rsquo;s NFL Pool <em>&middot; 2026</em></span><span class="navlinks"><a class="navlink" href="test-picks.html">Pick sheet</a><a class="navlink on" href="test-grid.html">Standings</a></span></div></nav>
-<div class="testbar"><div class="testbar__in">
-<div><b>Test week</b> &mdash; a whole NFL week squeezed into five hours, one hour per slot.
-<span id="clockline"></span></div>
-<button class="testreset" id="clockreset" type="button">Restart the clock</button>
-</div></div>
+<nav class="topnav"><div class="topnav__in" style="max-width:1260px"><span class="brand">Sue Couser&rsquo;s NFL Pool <em>&middot; 2026</em></span><span class="navlinks"><a class="navlink" href="picks.html">Pick sheet</a><a class="navlink on" href="grid.html">Standings</a></span></div></nav>
 <header class="mast">
   <div class="mast__in">
     <div>
@@ -234,64 +224,58 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 
 <script>
 const LOGOS=(function(){var o={},a=["ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC", "LAC", "LAR", "LV", "MIA", "MIN", "NE", "NFL", "NO", "NYG", "NYJ", "PHI", "PIT", "SEA", "SF", "TB", "TEN", "WAS"];for(var i=0;i<a.length;i++)o[a[i]]='assets/logos/'+a[i]+'.png';return o;})();
-/* --- Test-week clock -------------------------------------------------------
-   Hour 1 = the Thursday night game.  Hour 2 = the Sunday morning games, which
-   is also when picks close.  Hour 3 = Sunday afternoon.  Hour 4 = Sunday night.
-   Hour 5 = Monday night.  The clock starts on first visit and both test pages
-   share it, so the pick sheet and the standings always agree.               */
-const HOUR = 3600*1000;
-const CLOCK_KEY = 'suecouser.nflpool.testclock';
-function testStart(){
-  try{
-    var a = localStorage.getItem(CLOCK_KEY);
-    if(!a){ a = String(Date.now()); localStorage.setItem(CLOCK_KEY, a); }
-    return Number(a);
-  }catch(e){ return Date.now(); }
-}
-const T0 = testStart();
-const hhmm = ms => new Date(ms).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
-const SLOTS = [
-  {h:1, name:'Thursday night game'},
-  {h:2, name:'Sunday morning games — picks close'},
-  {h:3, name:'Sunday afternoon games'},
-  {h:4, name:'Sunday night game'},
-  {h:5, name:'Monday night game'}
-];
-function clockBar(){
-  var el = document.getElementById('clockline'); if(!el) return;
-  var now = Date.now(), next = SLOTS.find(s => now < T0 + s.h*HOUR);
-  var line = 'Clock started ' + hhmm(T0) + '. Picks close ' + hhmm(T0 + 2*HOUR) + '.';
-  if(next){
-    var mins = Math.ceil((T0 + next.h*HOUR - now)/60000);
-    line += ' Next up: ' + next.name + ' at ' + hhmm(T0 + next.h*HOUR)
-          + ' (' + (mins > 59 ? Math.floor(mins/60)+'h '+(mins%60)+'m' : mins+' min') + ').';
-  } else line += ' Every game has been played.';
-  el.textContent = line;
-}
-setInterval(clockBar, 15000);
-document.addEventListener('DOMContentLoaded', clockBar);
-
 const TEAMS={ARI:{c:'Arizona',n:'Cardinals',p:'#97233F'},ATL:{c:'Atlanta',n:'Falcons',p:'#A71930'},BAL:{c:'Baltimore',n:'Ravens',p:'#241773'},BUF:{c:'Buffalo',n:'Bills',p:'#00338D'},CAR:{c:'Carolina',n:'Panthers',p:'#0085CA'},CHI:{c:'Chicago',n:'Bears',p:'#0B162A'},CIN:{c:'Cincinnati',n:'Bengals',p:'#FB4F14'},CLE:{c:'Cleveland',n:'Browns',p:'#311D00'},DAL:{c:'Dallas',n:'Cowboys',p:'#041E42'},DEN:{c:'Denver',n:'Broncos',p:'#FB4F14'},DET:{c:'Detroit',n:'Lions',p:'#0076B6'},GB:{c:'Green Bay',n:'Packers',p:'#203731'},HOU:{c:'Houston',n:'Texans',p:'#03202F'},IND:{c:'Indianapolis',n:'Colts',p:'#002C5F'},JAX:{c:'Jacksonville',n:'Jaguars',p:'#006778'},KC:{c:'Kansas City',n:'Chiefs',p:'#E31837'},LV:{c:'Las Vegas',n:'Raiders',p:'#101820'},LAC:{c:'Los Angeles',n:'Chargers',p:'#0080C6'},LAR:{c:'Los Angeles',n:'Rams',p:'#003594'},MIA:{c:'Miami',n:'Dolphins',p:'#008E97'},MIN:{c:'Minnesota',n:'Vikings',p:'#4F2683'},NE:{c:'New England',n:'Patriots',p:'#002244'},NO:{c:'New Orleans',n:'Saints',p:'#101820'},NYG:{c:'New York',n:'Giants',p:'#0B2265'},NYJ:{c:'New York',n:'Jets',p:'#125740'},PHI:{c:'Philadelphia',n:'Eagles',p:'#004C54'},PIT:{c:'Pittsburgh',n:'Steelers',p:'#101820'},SF:{c:'San Francisco',n:'49ers',p:'#AA0000'},SEA:{c:'Seattle',n:'Seahawks',p:'#002244'},TB:{c:'Tampa Bay',n:'Buccaneers',p:'#D50A0A'},TEN:{c:'Tennessee',n:'Titans',p:'#0C2340'},WAS:{c:'Washington',n:'Commanders',p:'#5A1414'}};
 
-/* ---- who is in the pool, all season ---- */
-const ENTRANTS=[
- {team:'Turf Toe Terry',     who:'Terry Bishop'},
- {team:'The Armchair QBs',   who:'Dana Whitfield'},
- {team:'Cheese Curd Curse',  who:'Marco Ruiz'},
- {team:'Fourth & Long John', who:'Jonathan Pike'},
- {team:'Hail Mary',          who:'Grace Okafor'},
- {team:'Pylon Patrol',       who:'Sam Delacroix'},
- {team:'Two-Minute Warning', who:'Priya Raman'},
- {team:'Blitz Kids',         who:'Kevin Marsh'},
- {team:'Punt God',           who:'Alex Torrence'},
- {team:'The Waterboys',      who:'Nina Castellanos'}
-];
+/* ---- talking to the pool ---------------------------------------------------
+   The server holds every sheet and decides when they can be seen. Nothing here
+   can prise a sheet open early; the page is only ever shown what it is sent. */
+const API = '/api';
+function deviceToken(){
+  try{
+    let t = localStorage.getItem('suecouser.nflpool.device');
+    if(!t){
+      t = (self.crypto && crypto.randomUUID) ? crypto.randomUUID()
+          : Date.now().toString(36) + Math.floor(Math.random()*1e9).toString(36);
+      localStorage.setItem('suecouser.nflpool.device', t);
+    }
+    return t;
+  }catch(e){ return 'anon'; }
+}
+const TOKEN = deviceToken();
+const POOL = {};                 /* week number -> what the server last said */
+let poolState = 'loading';       /* loading | live | offline */
+function adminKey(){ try{ return localStorage.getItem('suecouser.nflpool.adminkey') || ''; }catch(e){ return ''; } }
 
-/* ---- Test week: the real schedule ---- */
+async function pullWeek(n){
+  try{
+    const r = await fetch(API + '/week/' + n + '?token=' + encodeURIComponent(TOKEN), {cache:'no-store'});
+    if(!r.ok) throw new Error('bad status');
+    POOL[n] = await r.json();
+    const w = WEEKS.find(x => x.n === n);
+    if(w && POOL[n].deadline) w.deadline = new Date(POOL[n].deadline);
+    poolState = 'live';
+  }catch(e){ poolState = 'offline'; }
+}
+async function pushResults(w){
+  try{
+    const r = await fetch(API + '/results', {method:'POST',
+      headers:{'content-type':'application/json', 'x-admin-key': adminKey()},
+      body: JSON.stringify({week:w.n, winners:w.results, actual:w.actual})});
+    if(r.status === 403){
+      const k = prompt('Commissioner key (set as ADMIN_KEY on the server):');
+      if(k){ try{ localStorage.setItem('suecouser.nflpool.adminkey', k); }catch(e){} return pushResults(w); }
+    }
+  }catch(e){}
+}
+
+/* ---- who is in the pool, all season ---- */
+
+/* ---- Week One: the real schedule ---- */
 const W1=[
- {id:'t1',a:'BUF',h:'NYJ'},{id:'t2',a:'KC',h:'DEN'},{id:'t3',a:'GB',h:'CHI'},{id:'t4',a:'SF',h:'SEA'},
- {id:'t5',a:'MIA',h:'NE'},{id:'t6',a:'LAR',h:'ARI'},{id:'t7',a:'TB',h:'CIN'},{id:'t8',a:'DET',h:'MIN'},
- {id:'t9',a:'DAL',h:'PHI'},{id:'t10',a:'BAL',h:'PIT',gotw:true}
+ {id:'g1',a:'NE',h:'SEA'},{id:'g2',a:'SF',h:'LAR'},{id:'g3',a:'CHI',h:'CAR'},{id:'g4',a:'TB',h:'CIN'},
+ {id:'g5',a:'NO',h:'DET'},{id:'g6',a:'ATL',h:'PIT'},{id:'g7',a:'BUF',h:'HOU'},{id:'g8',a:'BAL',h:'IND'},
+ {id:'g9',a:'CLE',h:'JAX'},{id:'g10',a:'NYJ',h:'TEN'},{id:'g11',a:'ARI',h:'LAC'},{id:'g12',a:'GB',h:'MIN'},
+ {id:'g13',a:'MIA',h:'LV'},{id:'g14',a:'WAS',h:'PHI'},{id:'g15',a:'DAL',h:'NYG'},{id:'g16',a:'DEN',h:'KC',gotw:true}
 ];
 /* Weeks 2 onwards are placeholders until the real fixtures are typed in. */
 const ABBRS=Object.keys(TEAMS);
@@ -302,22 +286,18 @@ function placeholder(n){
   }
   return out;
 }
-const DEADLINES=[new Date(T0 + 2*HOUR).toISOString()];
-const DEADLINE_TEXT=[hhmm(T0 + 2*HOUR) + ' today'];
-const STORE_KEY = n => 'suecouser.nflpool.week0.entries';
+const DEADLINES=['2026-09-13T13:00:00-04:00','2026-09-20T13:00:00-04:00','2026-09-27T13:00:00-04:00','2026-10-04T13:00:00-04:00'];
+const DEADLINE_TEXT=['Sunday, September 13 at 1:00 PM ET','Sunday, September 20 at 1:00 PM ET',
+                     'Sunday, September 27 at 1:00 PM ET','Sunday, October 4 at 1:00 PM ET'];
 const WEEKS=DEADLINES.map((d,i)=>({
-  n:i+1, label:'Test week', deadline:new Date(d), deadlineText:DEADLINE_TEXT[i],
-  games:i===0?W1:placeholder(i+1), real:i===0, results:{}, actual:null, store:STORE_KEY(i+1)
+  n:i+1, label:'Week '+(i+1), deadline:new Date(d), deadlineText:DEADLINE_TEXT[i],
+  games:i===0?W1:placeholder(i+1), real:i===0, results:{}, actual:null
 }));
 
 /* ---- sample sheets, so the shape of the thing is visible ---- */
 function seed(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return (h>>>0)%1000; }
 WEEKS.forEach(w=>{
-  w.picks = ENTRANTS.map(e=>{
-    const o={}; w.games.forEach(g=>{ o[g.id] = seed(e.team+'|w'+w.n+'|'+g.id)<560 ? g.h : g.a; }); return o;
-  });
-  w.ties = ENTRANTS.map(e=> 34 + seed('tie|'+e.team+'|'+w.n)%28);
-  w.sample = {};                       /* what a played week would look like */
+  w.sample = {};                       /* a stand-in result set, for the preview button */
   w.games.forEach(g=>{ w.sample[g.id] = seed('res|w'+w.n+'|'+g.id)<520 ? g.h : g.a; });
   w.sampleActual = 41 + w.n*3;
 });
@@ -334,31 +314,34 @@ function currentWeekN(){
 /* Sheets filled in on this device. Both pages sit on the same site, so the
    grid can read what the pick sheet saved. Other people's sheets still need a
    server -- until then the sample rows stand in for the rest of the pool. */
-function localEntries(w){
-  try{
-    const v = JSON.parse(localStorage.getItem(w.store) || '[]');
-    return Array.isArray(v) ? v : [];
-  }catch(e){ return []; }
-}
+/* Sheets the server has handed us. Before a week closes that is only your own,
+   which is exactly what the seal is for. */
 function roster(w){
-  const mine = localEntries(w)
-    .filter(e => e && e.picks && Object.keys(e.picks).length)
-    .map((e,i) => ({team: e.team || ('Entry '+(i+1)), who: e.name || 'Your sheet',
-                    picks: e.picks, tie: Number(e.tie) || 0, mine: true}));
-  const seen = {};
-  mine.forEach(r => { seen[r.team] = true; });
-  const samples = ENTRANTS.map((e,i) => ({team: e.team, who: e.who,
-                    picks: w.picks[i], tie: w.ties[i], mine: false}))
-                  .filter(r => !seen[r.team]);
-  return mine.concat(samples);
+  const p = POOL[w.n];
+  if(!p) return [];
+  return (p.entries || []).map(e => ({team: e.team, who: e.person || '\u2014',
+                                      picks: e.picks || {}, tie: Number(e.tie) || 0, mine: !!e.mine}));
 }
+function sheetsIn(w){ const p = POOL[w.n]; return p ? (p.roster || []) : []; }
+function serverRevealed(w){ const p = POOL[w.n]; return p ? !!p.revealed : null; }
 
 let tab = currentWeekN();     /* 'season' or a week number */
 let preview = false;          /* mock-up only: show the season as if it had been played */
 
-const revealed = w => preview || Date.now() >= w.deadline.getTime();
-function resultsOf(w){ return preview ? w.sample : w.results; }
-function actualOf(w){ return preview ? w.sampleActual : w.actual; }
+const revealed = w => preview || (serverRevealed(w) !== null ? serverRevealed(w)
+                                                             : Date.now() >= w.deadline.getTime());
+function resultsOf(w){
+  if(preview) return w.sample;
+  const p = POOL[w.n];
+  if(p && p.results && p.results.winners && Object.keys(p.results.winners).length) return p.results.winners;
+  return w.results;
+}
+function actualOf(w){
+  if(preview) return w.sampleActual;
+  if(w.actual != null) return w.actual;
+  const p = POOL[w.n];
+  return (p && p.results && p.results.actual != null) ? p.results.actual : null;
+}
 function called(w){ return Object.keys(resultsOf(w)).length; }
 function scoreOf(w,e){ const r=resultsOf(w);
   return w.games.reduce((n,g)=> n + (r[g.id] && r[g.id]===e.picks[g.id] ? 1 : 0), 0); }
@@ -455,7 +438,7 @@ function seasonView(){
   html += '<div class="legend"><span><i class="key key--win"></i> Won that week</span>'
     + '<span>Ranked by season total, then by weeks won.</span></div>';
   if(!any) html += '<div class="pending"><h2>No weeks in the book yet</h2>'
-    + '<p>Test week closes '+WEEKS[0].deadlineText+'. Until a week closes its column stays empty.</p></div>';
+    + '<p>Week One closes '+WEEKS[0].deadlineText+'. Until a week closes its column stays empty.</p></div>';
   html += '<div class="note-mock">Mock-up note: ten sample sheets, and weeks two onwards use placeholder fixtures until the real schedule is typed in.</div>';
   return html;
 }
@@ -467,7 +450,7 @@ function weekView(w){
     ? 'Sheets are coming in. Everyone’s picks stay hidden from each other until picks close.'
     : 'Every sheet side by side. Tap the winning team in a column heading and the grid marks itself — green for a correct pick, grey for a miss.';
   document.getElementById('tally').innerHTML =
-    '<div class="stat"><span>Sheets in</span><b>'+roster(w).length+'</b></div>'
+    '<div class="stat"><span>Sheets in</span><b>'+sheetsIn(w).length+'</b></div>'
     + '<div class="stat"><span>Games final</span><b>'+(revealed(w)?called(w)+' of '+w.games.length:'Sealed')+'</b></div>'
     + '<div class="stat lead"><span>'+(win?'Won by':'Leading')+'</span><b>'
       + (revealed(w)&&called(w) ? esc(weekRows(w)[0].e.team) : '&mdash;') + '</b></div>';
@@ -552,9 +535,11 @@ function sealedView(w){
     + 'Until then all you can see is who has sent theirs in. To look at your own sheet, or change it, '
     + 'go back to the pick sheet on the device you filled it in on.</p></div></div>'
     + '<div class="clock" id="clock"></div>'
-    + '<h3>Sheets in so far <em>('+roster(w).length+')</em></h3>'
-    + '<ul class="inlist">'+roster(w).map(e=>'<li><span class="ok">✓</span><div><b>'+esc(e.team)
-        + (e.mine?'<span class="youtag">You</span>':'')+'</b><span>'+esc(e.who)+'</span></div></li>').join('')+'</ul>'
+    + '<h3>Sheets in so far <em>('+sheetsIn(w).length+')</em></h3>'
+    + (sheetsIn(w).length
+        ? '<ul class="inlist">'+sheetsIn(w).map(e=>'<li><span class="ok">✓</span><div><b>'+esc(e.team)
+            +'</b><span>'+esc(e.person||'\u2014')+'</span></div></li>').join('')+'</ul>'
+        : '<p style="color:var(--ink-3); margin-top:10px">Nobody has sent a sheet in yet.</p>')
     + '<div class="peek"><button class="btn" id="preview">Preview the revealed grid</button>'
     + '<p>Mock-up control only. On the real thing there is no way to look early.</p></div></section>'
     + '<div class="note-mock">Mock-up note: ten sample sheets. Once the pick sheet saves for real, submissions land here as they arrive.</div>';
@@ -589,16 +574,17 @@ function wire(){
   if(head) head.addEventListener('click', e=>{
     const b = e.target.closest('.gh__pick'); if(!b) return;
     if(preview){ preview = false; w.results = Object.assign({}, w.sample); w.actual = w.sampleActual; }
+    if(!Object.keys(w.results).length) w.results = Object.assign({}, resultsOf(w));
     if(w.results[b.dataset.game] === b.dataset.team) delete w.results[b.dataset.game];
     else w.results[b.dataset.game] = b.dataset.team;
-    render();
+    pushResults(w); render();
   });
   const act = document.getElementById('actual');
-  if(act) act.addEventListener('input', e=>{ w.actual = e.target.value==='' ? null : Number(e.target.value); render(); });
+  if(act) act.addEventListener('input', e=>{ w.actual = e.target.value==='' ? null : Number(e.target.value); pushResults(w); render(); });
   const demo = document.getElementById('demo');
-  if(demo) demo.addEventListener('click', ()=>{ w.results = Object.assign({}, w.sample); w.actual = w.sampleActual; preview=false; render(); });
+  if(demo) demo.addEventListener('click', ()=>{ w.results = Object.assign({}, w.sample); w.actual = w.sampleActual; preview=false; pushResults(w); render(); });
   const clr = document.getElementById('clear');
-  if(clr) clr.addEventListener('click', ()=>{ w.results = {}; w.actual = null; render(); });
+  if(clr) clr.addEventListener('click', ()=>{ w.results = {}; w.actual = null; pushResults(w); render(); });
   const cp = document.getElementById('copy');
   if(cp) cp.addEventListener('click', async ()=>{
     const rows = weekRows(w);
@@ -618,12 +604,9 @@ document.getElementById('tabs').addEventListener('click', e=>{
 });
 setInterval(()=>{ if(tab!=='season'){ const w=WEEKS.find(x=>x.n===tab); if(w && !revealed(w)) drawClock(w); } }, 1000);
 render();
-
-var __r = document.getElementById('clockreset');
-if(__r) __r.addEventListener('click', function(){
-  try{ localStorage.removeItem(CLOCK_KEY); }catch(e){}
-  try{ localStorage.removeItem('suecouser.nflpool.week0.entries'); }catch(e){}
-  location.reload();
-});
-clockBar();
+(async function(){
+  await Promise.all(WEEKS.map(w => pullWeek(w.n)));
+  render();
+  setInterval(async ()=>{ await pullWeek(tab==='season' ? WEEKS[0].n : tab); render(); }, 60000);
+})();
 </script>
