@@ -79,7 +79,31 @@ function pgStore(){
   const q = (text, params) => pool.query(text, params);
   return {
     kind: 'postgres',
+    async tables(){
+      const t = await q(`select tablename from pg_tables where schemaname='public' order by tablename`);
+      const all = t.rows.map(r => r.tablename);
+      return {mine: all.filter(n => n.startsWith('nfl_pool_')),
+              others: all.filter(n => !n.startsWith('nfl_pool_'))};
+    },
     async init(){
+      /* Say plainly what is already in here, so nobody has to guess whether a
+         database is spare or is carrying another project. */
+      try{
+        const t = await q(`select tablename from pg_tables where schemaname='public' order by tablename`);
+        const all = t.rows.map(r => r.tablename);
+        const others = all.filter(n => !n.startsWith('nfl_pool_'));
+        const mine   = all.filter(n =>  n.startsWith('nfl_pool_'));
+        console.log('--- database check ---');
+        console.log(others.length === 0
+          ? 'This database is EMPTY apart from the pool. Nothing else is using it.'
+          : 'This database already holds ' + others.length + ' table(s) belonging to something else:');
+        if(others.length) console.log('  ' + others.slice(0, 40).join(', ') + (others.length > 40 ? ' ...' : ''));
+        console.log(mine.length ? 'Pool tables already present: ' + mine.join(', ')
+                                : 'Pool tables not there yet, creating them now.');
+        console.log('The pool only ever touches tables named nfl_pool_*.');
+        console.log('----------------------');
+      }catch(e){ console.log('could not list tables:', e.message); }
+
       await q(`create table if not exists nfl_pool_entries (
         week int not null, token text not null, team text not null,
         person text, email text, phone text, tiebreak int,
@@ -226,6 +250,13 @@ async function api(req, res, url){
     const rows = await store.entries(Number(parts[2]));
     return json(res, 200, {contacts: rows.map(r => ({team: r.team, person: r.person,
                                                      email: r.email, phone: r.phone}))});
+  }
+
+  if(req.method === 'GET' && parts[1] === 'health'){
+    if(!isAdmin(req)) return json(res, 403, {error: 'not the commissioner'});
+    let tables = null;
+    if(store.tables){ try { tables = await store.tables(); } catch(e){ tables = 'unavailable'; } }
+    return json(res, 200, {storage: store.kind, adminKeySet: !!ADMIN, tables});
   }
 
   if(req.method === 'POST' && parts[1] === 'test-reset'){
