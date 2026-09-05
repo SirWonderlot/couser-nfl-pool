@@ -133,6 +133,9 @@ tbody tr:last-child td{border-bottom:0}
 .rank{font-weight:800; font-size:15px; color:var(--ink-3); font-variant-numeric:tabular-nums}
 .who b{display:block; font-weight:600; font-size:15.5px; line-height:1.3; letter-spacing:-.01em}
 .who span{display:block; font-size:13px; color:var(--ink-3); line-height:1.3; font-weight:500}
+.youtag{display:inline-block; margin-left:7px; padding:2px 8px; border-radius:99px; background:var(--accent-soft);
+  color:var(--accent-dark); font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; vertical-align:1px}
+.inlist .youtag{margin-left:6px}
 .c-score{width:92px; min-width:92px; border-left:3px solid var(--line-2)}
 tbody td.c-score,thead th.c-score,tfoot td.c-score{background:var(--soft)}
 .score{font-weight:800; font-size:27px; letter-spacing:-.03em; font-variant-numeric:tabular-nums; line-height:1}
@@ -301,9 +304,10 @@ function placeholder(n){
 }
 const DEADLINES=[new Date(T0 + 2*HOUR).toISOString()];
 const DEADLINE_TEXT=[hhmm(T0 + 2*HOUR) + ' today'];
+const STORE_KEY = n => 'suecouser.nflpool.week0.entries';
 const WEEKS=DEADLINES.map((d,i)=>({
   n:i+1, label:'Test week', deadline:new Date(d), deadlineText:DEADLINE_TEXT[i],
-  games:i===0?W1:placeholder(i+1), real:i===0, results:{}, actual:null
+  games:i===0?W1:placeholder(i+1), real:i===0, results:{}, actual:null, store:STORE_KEY(i+1)
 }));
 
 /* ---- sample sheets, so the shape of the thing is visible ---- */
@@ -327,6 +331,28 @@ function currentWeekN(){
   return w ? w.n : WEEKS[WEEKS.length-1].n;
 }
 
+/* Sheets filled in on this device. Both pages sit on the same site, so the
+   grid can read what the pick sheet saved. Other people's sheets still need a
+   server -- until then the sample rows stand in for the rest of the pool. */
+function localEntries(w){
+  try{
+    const v = JSON.parse(localStorage.getItem(w.store) || '[]');
+    return Array.isArray(v) ? v : [];
+  }catch(e){ return []; }
+}
+function roster(w){
+  const mine = localEntries(w)
+    .filter(e => e && e.picks && Object.keys(e.picks).length)
+    .map((e,i) => ({team: e.team || ('Entry '+(i+1)), who: e.name || 'Your sheet',
+                    picks: e.picks, tie: Number(e.tie) || 0, mine: true}));
+  const seen = {};
+  mine.forEach(r => { seen[r.team] = true; });
+  const samples = ENTRANTS.map((e,i) => ({team: e.team, who: e.who,
+                    picks: w.picks[i], tie: w.ties[i], mine: false}))
+                  .filter(r => !seen[r.team]);
+  return mine.concat(samples);
+}
+
 let tab = currentWeekN();     /* 'season' or a week number */
 let preview = false;          /* mock-up only: show the season as if it had been played */
 
@@ -334,13 +360,13 @@ const revealed = w => preview || Date.now() >= w.deadline.getTime();
 function resultsOf(w){ return preview ? w.sample : w.results; }
 function actualOf(w){ return preview ? w.sampleActual : w.actual; }
 function called(w){ return Object.keys(resultsOf(w)).length; }
-function scoreOf(w,i){ const r=resultsOf(w), p=w.picks[i];
-  return w.games.reduce((n,g)=> n + (r[g.id] && r[g.id]===p[g.id] ? 1 : 0), 0); }
-function offBy(w,i){ const a=actualOf(w); return a==null ? null : Math.abs(a - w.ties[i]); }
+function scoreOf(w,e){ const r=resultsOf(w);
+  return w.games.reduce((n,g)=> n + (r[g.id] && r[g.id]===e.picks[g.id] ? 1 : 0), 0); }
+function offBy(w,e){ const a=actualOf(w); return a==null ? null : Math.abs(a - e.tie); }
 
 /* rows for one week, best first */
 function weekRows(w){
-  const rows = ENTRANTS.map((e,i)=>({e,i,s:scoreOf(w,i),o:offBy(w,i)}));
+  const rows = roster(w).map(e=>({e, s:scoreOf(w,e), o:offBy(w,e)}));
   if(called(w)) rows.sort((x,y)=> y.s-x.s || ((x.o??999)-(y.o??999)) || x.e.team.localeCompare(y.e.team));
   return rows;
 }
@@ -355,10 +381,19 @@ function weekWinner(w){
   return closest.length === 1 ? closest[0] : null;
 }
 function seasonRows(){
-  const rows = ENTRANTS.map((e,i)=>{
-    const per = WEEKS.map(w => revealed(w) && called(w) ? scoreOf(w,i) : null);
-    const won = WEEKS.filter(w => { const x = weekWinner(w); return x && x.i === i; }).length;
-    return {e, i, per, total: per.reduce((a,b)=> a + (b||0), 0), won};
+  const who = {}, order = [];
+  WEEKS.forEach(w => roster(w).forEach(e => {
+    if(!who[e.team]){ who[e.team] = {team:e.team, who:e.who, mine:e.mine}; order.push(e.team); }
+    if(e.mine) who[e.team].mine = true;
+  }));
+  const rows = order.map(name => {
+    const per = WEEKS.map(w => {
+      if(!(revealed(w) && called(w))) return null;
+      const e = roster(w).find(x => x.team === name);
+      return e ? scoreOf(w, e) : null;
+    });
+    const won = WEEKS.filter(w => { const x = weekWinner(w); return x && x.e.team === name; }).length;
+    return {e: who[name], per, total: per.reduce((a,b)=> a + (b||0), 0), won};
   });
   rows.sort((x,y)=> y.total-x.total || y.won-x.won || x.e.team.localeCompare(y.e.team));
   return rows;
@@ -386,7 +421,7 @@ function seasonView(){
     ? 'Every week added up. Most correct picks over the season sits top; the weeks-won column breaks a tie of pride, not of rank.'
     : 'Nothing has been played yet. As each week closes, the scores land here and the table sorts itself.';
   document.getElementById('tally').innerHTML =
-    '<div class="stat"><span>In the pool</span><b>'+ENTRANTS.length+'</b></div>'
+    '<div class="stat"><span>In the pool</span><b>'+rows.length+'</b></div>'
     + '<div class="stat"><span>Weeks played</span><b>'+WEEKS.filter(w=>revealed(w)&&called(w)).length+' of '+WEEKS.length+'</b></div>'
     + '<div class="stat lead"><span>Leading</span><b>'+(any?esc(rows[0].e.team):'&mdash;')+'</b></div>';
 
@@ -404,11 +439,12 @@ function seasonView(){
         return '<tr'+(champ?' class="champ"':'')+'>'
           + '<td class="c-rank"><span class="rank">'+(idx+1)+'</span>'
  + '</td>'
-          + '<td class="c-team"><div class="who"><b>'+esc(r.e.team)+'</b><span>'+esc(r.e.who)+'</span></div></td>'
+          + '<td class="c-team"><div class="who"><b>'+esc(r.e.team)+(r.e.mine?'<span class="youtag">You</span>':'')
+          + '</b><span>'+esc(r.e.who)+'</span></div></td>'
           + r.per.map((v,wi)=>{
               if(v===null) return '<td class="wkcol"><span class="wk none">&mdash;</span></td>';
               const win = weekWinner(WEEKS[wi]);
-              const mine = win && win.i === r.i;
+              const mine = win && win.e.team === r.e.team;
               return '<td class="wkcol"><span class="wk'+(mine?' wkwin':'')+'">'+v+'</span></td>';
             }).join('')
           + '<td class="c-total"><span class="total">'+r.total+'</span></td>'
@@ -431,7 +467,7 @@ function weekView(w){
     ? 'Sheets are coming in. Everyone’s picks stay hidden from each other until picks close.'
     : 'Every sheet side by side. Tap the winning team in a column heading and the grid marks itself — green for a correct pick, grey for a miss.';
   document.getElementById('tally').innerHTML =
-    '<div class="stat"><span>Sheets in</span><b>'+ENTRANTS.length+'</b></div>'
+    '<div class="stat"><span>Sheets in</span><b>'+roster(w).length+'</b></div>'
     + '<div class="stat"><span>Games final</span><b>'+(revealed(w)?called(w)+' of '+w.games.length:'Sealed')+'</b></div>'
     + '<div class="stat lead"><span>'+(win?'Won by':'Leading')+'</span><b>'
       + (revealed(w)&&called(w) ? esc(weekRows(w)[0].e.team) : '&mdash;') + '</b></div>';
@@ -466,24 +502,26 @@ function weekView(w){
     + '<th class="c-score hd">Correct</th><th class="tiecol hd">Score<br>guess</th><th class="tiecol hd">Off by</th>'
     + '</tr></thead><tbody>'
     + rows.map((r,idx)=>{
-        const champ = win && win.i === r.i;
+        const champ = win && win.e.team === r.e.team;
         let tds = '<td class="c-rank"><span class="rank">'+(idx+1)+'</span></td>'
-          + '<td class="c-team"><div class="who"><b>'+esc(r.e.team)+'</b><span>'+esc(r.e.who)+'</span></div></td>';
+          + '<td class="c-team"><div class="who"><b>'+esc(r.e.team)+(r.e.mine?'<span class="youtag">You</span>':'')
+             + '</b><span>'+esc(r.e.who)+'</span></div></td>';
         w.games.forEach(g=>{
-          const ab = w.picks[r.i][g.id], res = resultsOf(w)[g.id];
+          const ab = r.e.picks[g.id], res = resultsOf(w)[g.id];
           const state = !res ? '' : (res===ab ? ' hit' : ' miss');
           tds += '<td class="gcol"><div class="cell'+state+'"><img src="'+LOGOS[ab]+'" alt="'+ab+'" title="'+TEAMS[ab].c+' '+TEAMS[ab].n+'"></div></td>';
         });
         tds += '<td class="c-score"><span class="score">'+(c?r.s:'&mdash;')+(c?'<em>of '+c+'</em>':'')+'</span></td>'
-          + '<td class="tiecol"><span class="tieval">'+w.ties[r.i]+'</span></td>'
+          + '<td class="tiecol"><span class="tieval">'+r.e.tie+'</span></td>'
           + '<td class="tiecol"><span class="tieoff'+(r.o!=null&&r.o===bestOff?' best':'')+'">'+(r.o==null?'&mdash;':r.o)+'</span></td>';
         return '<tr'+(champ?' class="champ"':'')+'>'+tds+'</tr>';
       }).join('')
     + '</tbody><tfoot><tr>'
     + '<td class="c-rank"></td><td class="c-team foot-lbl">Everyone picked</td>'
     + w.games.map(g=>{
-        const homeN = w.picks.filter(p => p[g.id]===g.h).length;
-        const pct = Math.round(homeN/ENTRANTS.length*100);
+        const all = roster(w);
+        const homeN = all.filter(p => p.picks[g.id]===g.h).length;
+        const pct = Math.round(homeN/all.length*100);
         const lead = pct>=50 ? g.h : g.a, leadPct = pct>=50 ? pct : 100-pct;
         return '<td class="gcol"><div class="consensus"><div class="cbar">'
           + '<i style="width:'+(100-pct)+'%;background:'+TEAMS[g.a].p+'"></i>'
@@ -514,9 +552,9 @@ function sealedView(w){
     + 'Until then all you can see is who has sent theirs in. To look at your own sheet, or change it, '
     + 'go back to the pick sheet on the device you filled it in on.</p></div></div>'
     + '<div class="clock" id="clock"></div>'
-    + '<h3>Sheets in so far <em>('+ENTRANTS.length+' of '+ENTRANTS.length+')</em></h3>'
-    + '<ul class="inlist">'+ENTRANTS.map(e=>'<li><span class="ok">✓</span><div><b>'+esc(e.team)+'</b>'
-        + '<span>'+esc(e.who)+'</span></div></li>').join('')+'</ul>'
+    + '<h3>Sheets in so far <em>('+roster(w).length+')</em></h3>'
+    + '<ul class="inlist">'+roster(w).map(e=>'<li><span class="ok">✓</span><div><b>'+esc(e.team)
+        + (e.mine?'<span class="youtag">You</span>':'')+'</b><span>'+esc(e.who)+'</span></div></li>').join('')+'</ul>'
     + '<div class="peek"><button class="btn" id="preview">Preview the revealed grid</button>'
     + '<p>Mock-up control only. On the real thing there is no way to look early.</p></div></section>'
     + '<div class="note-mock">Mock-up note: ten sample sheets. Once the pick sheet saves for real, submissions land here as they arrive.</div>';
@@ -566,8 +604,8 @@ function wire(){
     const rows = weekRows(w);
     const hdr = ['Rank','Team','Name','Correct'].concat(w.games.map(g=>g.a+' at '+g.h)).concat(['Score guess','Off by']);
     const lines = [hdr.join(',')].concat(rows.map((r,i)=>
-      [i+1,'"'+r.e.team+'"','"'+r.e.who+'"',r.s].concat(w.games.map(g=>w.picks[r.i][g.id]))
-        .concat([w.ties[r.i], r.o ?? '']).join(',')));
+      [i+1,'"'+r.e.team+'"','"'+r.e.who+'"',r.s].concat(w.games.map(g=>r.e.picks[g.id]))
+        .concat([r.e.tie, r.o ?? '']).join(',')));
     try { await navigator.clipboard.writeText(lines.join('\n')); cp.textContent='Copied'; }
     catch(e){ cp.textContent='Copy blocked'; }
     setTimeout(()=>{ cp.textContent='Copy grid'; }, 1600);

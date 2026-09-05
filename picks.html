@@ -166,17 +166,25 @@ label{display:block; font-weight:700; font-size:13.5px; color:var(--ink-2); marg
 .send .note{color:var(--ink-3); font-size:14.5px; max-width:36ch}
 .send .note a{color:var(--accent-dark); font-weight:700}
 
+/* ---------- panels that open and close ---------- */
+.reveal{display:grid; grid-template-rows:0fr; opacity:0; margin-top:0}
+.reveal.on{grid-template-rows:1fr; opacity:1; margin-top:26px}
+.reveal__box{overflow:hidden; min-height:0}
+body.anim .reveal{
+  transition:grid-template-rows .42s cubic-bezier(.22,1,.36,1),
+             opacity .3s ease, margin-top .42s cubic-bezier(.22,1,.36,1);
+}
+
 /* ---------- your entries on this device ---------- */
-.mine{
-  display:none; margin-top:26px; background:var(--card); border-radius:26px; padding:26px 28px;
+.mine__card{
+  background:var(--card); border-radius:26px; padding:26px 28px;
   box-shadow:var(--shadow); border-left:5px solid var(--accent);
 }
-.mine.on{display:block}
-.mine h3{font-size:20px; font-weight:800; letter-spacing:-.025em}
-.mine p{color:var(--ink-2); margin:8px 0 0; max-width:60ch; font-size:15.5px}
-.mine .row{display:flex; align-items:center; gap:12px; margin-top:18px; flex-wrap:wrap}
-.mine .strip{display:flex; flex-wrap:wrap; gap:5px}
-.mine .strip img{width:30px; height:30px; border-radius:50%; background:#fff; display:block; box-shadow:0 0 0 1px var(--line)}
+.mine__card h3{font-size:20px; font-weight:800; letter-spacing:-.025em}
+.mine__card p{color:var(--ink-2); margin:8px 0 0; max-width:60ch; font-size:15.5px}
+.mine__card .row{display:flex; align-items:center; gap:12px; margin-top:18px; flex-wrap:wrap}
+.mine__card .strip{display:flex; flex-wrap:wrap; gap:5px}
+.mine__card .strip img{width:30px; height:30px; border-radius:50%; background:#fff; display:block; box-shadow:0 0 0 1px var(--line)}
 .entrylist{display:flex; flex-direction:column; gap:10px; margin-top:18px}
 .entry{
   display:block; width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer;
@@ -205,12 +213,12 @@ label{display:block; font-weight:700; font-size:13.5px; color:var(--ink-2); marg
   color:var(--accent-dark); display:grid; place-items:center; font-size:12px; font-weight:800;
 }
 .entry.add{border-style:dashed; background:transparent; text-align:center; padding:13px 18px; font-weight:700; color:var(--ink-2)}
-.mine .btn{
+.mine__card .btn{
   font-family:inherit; font-weight:700; font-size:14px; background:var(--soft); color:var(--ink-2);
   border:2px solid var(--line); border-radius:99px; padding:10px 18px; cursor:pointer;
 }
-.mine .btn:hover{border-color:var(--line-2); color:var(--ink)}
-.mine .where{margin-top:18px; padding:12px 15px; background:var(--soft); border-radius:14px; color:var(--ink-3); font-size:13px}
+.mine__card .btn:hover{border-color:var(--line-2); color:var(--ink)}
+.mine__card .where{margin-top:18px; padding:12px 15px; background:var(--soft); border-radius:14px; color:var(--ink-3); font-size:13px}
 
 /* ---------- after kickoff ---------- */
 body.closed .side{pointer-events:none}
@@ -221,19 +229,18 @@ body.closed .closednote{display:flex}
 body.closed .go{display:none}
 
 /* ---------- receipt ---------- */
-.receipt{display:none; margin-top:26px; background:var(--card); border-radius:30px; padding:32px; box-shadow:var(--shadow); border:2px solid var(--accent)}
-.receipt.on{display:block}
-.receipt h3{font-size:22px; font-weight:800; letter-spacing:-.025em; margin-top:14px}
-.receipt p{color:var(--ink-2); margin:8px 0 0}
-.receipt ul{list-style:none; margin:20px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px}
-.receipt li{display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--ink-2); font-weight:600}
-.receipt li img{width:26px; height:26px; border-radius:50%; background:#fff; flex:0 0 auto}
-.receipt li b{color:var(--ink); font-weight:800}
-.receipt__keep{
+.receipt__card{background:var(--card); border-radius:30px; padding:32px; box-shadow:var(--shadow); border:2px solid var(--accent)}
+.receipt__card h3{font-size:22px; font-weight:800; letter-spacing:-.025em; margin-top:14px}
+.receipt__card p{color:var(--ink-2); margin:8px 0 0}
+.receipt__card ul{list-style:none; margin:20px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px}
+.receipt__card li{display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--ink-2); font-weight:600}
+.receipt__card li img{width:26px; height:26px; border-radius:50%; background:#fff; flex:0 0 auto}
+.receipt__card li b{color:var(--ink); font-weight:800}
+.receipt__card .receipt__keep{
   margin-top:16px !important; padding:16px 18px; background:var(--accent-soft); border-radius:18px;
   color:var(--accent-dark) !important; font-size:15.5px; font-weight:600; max-width:none !important;
 }
-.receipt__keep b{font-weight:800}
+.receipt__card .receipt__keep b{font-weight:800}
 .note-mock{margin-top:22px; padding:14px 16px; background:var(--soft); border-radius:16px; color:var(--ink-3); font-size:13.5px}
 @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
 </style>
@@ -257,14 +264,14 @@ body.closed .go{display:none}
 
 <main class="wrap">
 
-  <section class="mine" id="mine">
+  <section class="mine reveal" id="mine"><div class="reveal__box"><div class="mine__card">
     <h3 id="mine-h">Your entries on this device</h3>
     <p id="mine-p"></p>
     <div class="entrylist" id="entrylist"></div>
     <p class="pickhint" id="pickhint" hidden><span>&#8593;</span>Select a team above to change its picks.</p>
     <div class="row"><button class="btn" id="mine-drop" type="button">Remove this entry</button></div>
     <div class="where" id="mine-where">Kept in this browser only &mdash; nobody else can see these, and they will not follow you to another device. Everything you change saves as you go.</div>
-  </section>
+  </div></div></section>
 
   <div class="lockednote" id="lockednote" hidden></div>
 
@@ -299,14 +306,14 @@ body.closed .go{display:none}
     </div>
   </section>
 
-  <section class="receipt" id="receipt" aria-live="polite">
+  <section class="receipt reveal" id="receipt" aria-live="polite"><div class="reveal__box"><div class="receipt__card">
     <span class="tag">Sent</span>
     <h3 style="font-size:22px">Picks are in</h3>
     <p id="receipt-line"></p>
     <p class="receipt__keep" id="receipt-keep"></p>
     <ul id="receipt-list"></ul>
     <div class="note-mock">Mock-up note: your entries are kept in this browser, but nothing is sent to the pool yet. Wiring the real submission is the next step.</div>
-  </section>
+  </div></div></section>
 </main>
 
 <script>
@@ -549,6 +556,7 @@ const startList = allEntries().sort((x,y) => (y.updated||0) - (x.updated||0));
 if(startList.length) loadEntry(startList[0].id);
 drawEntries();
 
+requestAnimationFrame(function(){ requestAnimationFrame(function(){ document.body.classList.add('anim'); }); });
 setInterval(refresh, 20000);   /* so a game locks itself if the page is left open */
 refresh();
 </script>
