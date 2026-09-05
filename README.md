@@ -20,6 +20,7 @@ who has entered.
 | `DATABASE_URL` | Postgres. Every table is prefixed `nfl_pool_`, so this can point at a database already in use for something else. Leave it unset and the pool writes `data/pool.json` instead — fine on your own machine, but Render wipes it on every restart. |
 | `ADMIN_KEY` | Needed to mark results and to read anyone's contact details. Without it nobody can call a game. |
 | `PORT` | Render sets this. |
+| `PGSSL` | `on` or `off`. Only needed if the automatic choice is wrong — Render's internal connection string wants SSL off, the external one wants it on, and the code works that out from the host. |
 
 ## Running it here
 

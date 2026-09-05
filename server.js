@@ -66,10 +66,16 @@ function fileStore(){
 
 function pgStore(){
   const {Pool} = require('pg');
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: /localhost|127\.0\.0\.1/.test(process.env.DATABASE_URL) ? false : {rejectUnauthorized: false}
-  });
+  /* Render gives two connection strings. The internal one has no dot in the
+     host and needs no SSL; the external one does. PGSSL=on|off overrides. */
+  const url = process.env.DATABASE_URL;
+  const host = (url.match(/@([^/:?]+)/) || [,''])[1];
+  const forced = (process.env.PGSSL || '').toLowerCase();
+  const wantsSsl = forced === 'on'  ? true
+                 : forced === 'off' ? false
+                 : host.includes('.') && !/^(localhost|127\.0\.0\.1)/.test(host);
+  const pool = new Pool({connectionString: url, ssl: wantsSsl ? {rejectUnauthorized: false} : false});
+  pool.on('error', e => console.error('postgres pool error:', e.message));
   const q = (text, params) => pool.query(text, params);
   return {
     kind: 'postgres',
@@ -262,6 +268,8 @@ const server = http.createServer((req, res) => {
 store.init()
   .then(() => server.listen(PORT, () => {
     console.log('NFL pool listening on ' + PORT + ' (storage: ' + store.kind + ')');
+    if(store.kind === 'json file')
+      console.log('WARNING: no DATABASE_URL, so entries are kept in a file that Render wipes on restart.');
     if(!ADMIN) console.log('WARNING: ADMIN_KEY is not set, so results cannot be marked.');
   }))
   .catch(e => { console.error('could not start:', e.message); process.exit(1); });
