@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="googlebot" content="noindex, nofollow, noarchive">
-<title>Week Zero Pick Sheet</title>
+<title>Test Week Pick Sheet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
@@ -236,14 +236,27 @@ body.closed .go{display:none}
 .receipt__keep b{font-weight:800}
 .note-mock{margin-top:22px; padding:14px 16px; background:var(--soft); border-radius:16px; color:var(--ink-3); font-size:13.5px}
 @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+.testbar{background:#FFF6DC; border-bottom:2px solid #E9A400; color:#8A6200}
+.testbar__in{max-width:1260px; margin:0 auto; padding:12px 18px; display:flex; gap:16px;
+  align-items:center; flex-wrap:wrap; font-size:14.5px; font-weight:600; line-height:1.45}
+.testbar b{font-weight:800}
+.testbar #clockline{display:block; font-weight:500}
+.testreset{margin-left:auto; font-family:inherit; font-weight:700; font-size:13.5px;
+  background:#fff; color:#8A6200; border:2px solid #E9A400; border-radius:99px; padding:9px 16px; cursor:pointer}
+.testreset:hover{background:#FFEFC0}
 </style>
 
 <nav class="topnav"><div class="topnav__in" style="max-width:1140px"><span class="brand">Sue Couser&rsquo;s NFL Pool <em>&middot; 2026</em></span><span class="navlinks"><a class="navlink on" href="test-picks.html">Pick sheet</a><a class="navlink" href="test-grid.html">Standings</a></span></div></nav>
+<div class="testbar"><div class="testbar__in">
+<div><b>Test week</b> &mdash; a whole NFL week squeezed into five hours, one hour per slot.
+<span id="clockline"></span></div>
+<button class="testreset" id="clockreset" type="button">Restart the clock</button>
+</div></div>
 <header class="mast">
   <div class="mast__in">
     <div class="eyebrow">2026 Season</div>
-    <h1>Week Zero</h1>
-    <p class="mast__first">First game <b>Thursday, September 3</b> at <b>8:20 PM ET</b></p>
+    <h1>Test week</h1>
+    <p class="mast__first">First game one hour after the clock starts</p>
   </div>
 </header>
 
@@ -255,7 +268,6 @@ body.closed .go{display:none}
   </div>
 </div>
 
-<div style="background:#FFF6DC;border-bottom:2px solid #E9A400;color:#8A6200;font-weight:700;text-align:center;padding:11px 18px;font-size:14.5px">Test week &mdash; made-up games, so we can try the whole thing before the season starts.</div>
 <main class="wrap">
 
   <section class="mine" id="mine">
@@ -295,8 +307,8 @@ body.closed .go{display:none}
     </div>
     <div class="send">
       <button class="go" id="go" disabled>Send my picks</button>
-      <span class="closednote">&#128274; Picks closed at 1:00 PM ET on Saturday. This is your sheet as it went in.</span>
-      <p class="note">Your sheet stays hidden from everyone else until picks close on Saturday, then it appears on the <a href="test-grid.html">pool grid</a>.</p>
+      <span class="closednote">&#128274; Picks are closed. This is your sheet as it went in.</span>
+      <p class="note">Your sheet stays hidden from everyone else until picks close, then it appears on the <a href="test-grid.html">pool grid</a>.</p>
     </div>
   </section>
 
@@ -312,23 +324,64 @@ body.closed .go{display:none}
 
 <script>
 const LOGOS=(function(){var o={},a=["ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC", "LAC", "LAR", "LV", "MIA", "MIN", "NE", "NFL", "NO", "NYG", "NYJ", "PHI", "PIT", "SEA", "SF", "TB", "TEN", "WAS"];for(var i=0;i<a.length;i++)o[a[i]]='assets/logos/'+a[i]+'.png';return o;})();
-const TEAMS={ARI:{c:'Arizona',n:'Cardinals',p:'#97233F'},ATL:{c:'Atlanta',n:'Falcons',p:'#A71930'},BAL:{c:'Baltimore',n:'Ravens',p:'#241773'},BUF:{c:'Buffalo',n:'Bills',p:'#00338D'},CAR:{c:'Carolina',n:'Panthers',p:'#0085CA'},CHI:{c:'Chicago',n:'Bears',p:'#0B162A'},CIN:{c:'Cincinnati',n:'Bengals',p:'#FB4F14'},CLE:{c:'Cleveland',n:'Browns',p:'#311D00'},DAL:{c:'Dallas',n:'Cowboys',p:'#041E42'},DEN:{c:'Denver',n:'Broncos',p:'#FB4F14'},DET:{c:'Detroit',n:'Lions',p:'#0076B6'},GB:{c:'Green Bay',n:'Packers',p:'#203731'},HOU:{c:'Houston',n:'Texans',p:'#03202F'},IND:{c:'Indianapolis',n:'Colts',p:'#002C5F'},JAX:{c:'Jacksonville',n:'Jaguars',p:'#006778'},KC:{c:'Kansas City',n:'Chiefs',p:'#E31837'},LV:{c:'Las Vegas',n:'Raiders',p:'#101820'},LAC:{c:'Los Angeles',n:'Chargers',p:'#0080C6'},LAR:{c:'Los Angeles',n:'Rams',p:'#003594'},MIA:{c:'Miami',n:'Dolphins',p:'#008E97'},MIN:{c:'Minnesota',n:'Vikings',p:'#4F2683'},NE:{c:'New England',n:'Patriots',p:'#002244'},NO:{c:'New Orleans',n:'Saints',p:'#101820'},NYG:{c:'New York',n:'Giants',p:'#0B2265'},NYJ:{c:'New York',n:'Jets',p:'#125740'},PHI:{c:'Philadelphia',n:'Eagles',p:'#004C54'},PIT:{c:'Pittsburgh',n:'Steelers',p:'#101820'},SF:{c:'San Francisco',n:'49ers',p:'#AA0000'},SEA:{c:'Seattle',n:'Seahawks',p:'#002244'},TB:{c:'Tampa Bay',n:'Buccaneers',p:'#D50A0A'},TEN:{c:'Tennessee',n:'Titans',p:'#0C2340'},WAS:{c:'Washington',n:'Commanders',p:'#5A1414'}};
-const GAMES=[
- {id:'t1',k:'2026-09-03T20:20:00-04:00',a:'BUF',h:'NYJ',grp:'Thursday Night &middot; September 3',t:'8:20 PM ET',tv:'Test'},
- {id:'t2',k:'2026-09-04T20:00:00-04:00',a:'DAL',h:'PHI',grp:'Friday Night &middot; September 4',t:'8:00 PM ET',tv:'Test'},
- {id:'t3',k:'2026-09-05T13:00:00-04:00',a:'KC',h:'DEN',grp:'Saturday &middot; September 5 &middot; Early games',t:'1:00 PM ET',tv:'Test'},
- {id:'t4',k:'2026-09-05T13:00:00-04:00',a:'GB',h:'CHI',grp:'Saturday &middot; September 5 &middot; Early games',t:'1:00 PM ET',tv:'Test'},
- {id:'t5',k:'2026-09-05T13:00:00-04:00',a:'SF',h:'SEA',grp:'Saturday &middot; September 5 &middot; Early games',t:'1:00 PM ET',tv:'Test'},
- {id:'t6',k:'2026-09-05T13:00:00-04:00',a:'MIA',h:'NE',grp:'Saturday &middot; September 5 &middot; Early games',t:'1:00 PM ET',tv:'Test'},
- {id:'t7',k:'2026-09-05T16:25:00-04:00',a:'LAR',h:'ARI',grp:'Saturday &middot; September 5 &middot; Late game',t:'4:25 PM ET',tv:'Test'},
- {id:'t8',k:'2026-09-06T20:20:00-04:00',a:'BAL',h:'PIT',grp:'Sunday Night &middot; September 6',t:'8:20 PM ET',tv:'Test',gotw:true}
+/* --- Test-week clock -------------------------------------------------------
+   Hour 1 = the Thursday night game.  Hour 2 = the Sunday morning games, which
+   is also when picks close.  Hour 3 = Sunday afternoon.  Hour 4 = Sunday night.
+   Hour 5 = Monday night.  The clock starts on first visit and both test pages
+   share it, so the pick sheet and the standings always agree.               */
+const HOUR = 3600*1000;
+const CLOCK_KEY = 'suecouser.nflpool.testclock';
+function testStart(){
+  try{
+    var a = localStorage.getItem(CLOCK_KEY);
+    if(!a){ a = String(Date.now()); localStorage.setItem(CLOCK_KEY, a); }
+    return Number(a);
+  }catch(e){ return Date.now(); }
+}
+const T0 = testStart();
+const hhmm = ms => new Date(ms).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+const SLOTS = [
+  {h:1, name:'Thursday night game'},
+  {h:2, name:'Sunday morning games — picks close'},
+  {h:3, name:'Sunday afternoon games'},
+  {h:4, name:'Sunday night game'},
+  {h:5, name:'Monday night game'}
 ];
+function clockBar(){
+  var el = document.getElementById('clockline'); if(!el) return;
+  var now = Date.now(), next = SLOTS.find(s => now < T0 + s.h*HOUR);
+  var line = 'Clock started ' + hhmm(T0) + '. Picks close ' + hhmm(T0 + 2*HOUR) + '.';
+  if(next){
+    var mins = Math.ceil((T0 + next.h*HOUR - now)/60000);
+    line += ' Next up: ' + next.name + ' at ' + hhmm(T0 + next.h*HOUR)
+          + ' (' + (mins > 59 ? Math.floor(mins/60)+'h '+(mins%60)+'m' : mins+' min') + ').';
+  } else line += ' Every game has been played.';
+  el.textContent = line;
+}
+setInterval(clockBar, 15000);
+document.addEventListener('DOMContentLoaded', clockBar);
+
+const TEAMS={ARI:{c:'Arizona',n:'Cardinals',p:'#97233F'},ATL:{c:'Atlanta',n:'Falcons',p:'#A71930'},BAL:{c:'Baltimore',n:'Ravens',p:'#241773'},BUF:{c:'Buffalo',n:'Bills',p:'#00338D'},CAR:{c:'Carolina',n:'Panthers',p:'#0085CA'},CHI:{c:'Chicago',n:'Bears',p:'#0B162A'},CIN:{c:'Cincinnati',n:'Bengals',p:'#FB4F14'},CLE:{c:'Cleveland',n:'Browns',p:'#311D00'},DAL:{c:'Dallas',n:'Cowboys',p:'#041E42'},DEN:{c:'Denver',n:'Broncos',p:'#FB4F14'},DET:{c:'Detroit',n:'Lions',p:'#0076B6'},GB:{c:'Green Bay',n:'Packers',p:'#203731'},HOU:{c:'Houston',n:'Texans',p:'#03202F'},IND:{c:'Indianapolis',n:'Colts',p:'#002C5F'},JAX:{c:'Jacksonville',n:'Jaguars',p:'#006778'},KC:{c:'Kansas City',n:'Chiefs',p:'#E31837'},LV:{c:'Las Vegas',n:'Raiders',p:'#101820'},LAC:{c:'Los Angeles',n:'Chargers',p:'#0080C6'},LAR:{c:'Los Angeles',n:'Rams',p:'#003594'},MIA:{c:'Miami',n:'Dolphins',p:'#008E97'},MIN:{c:'Minnesota',n:'Vikings',p:'#4F2683'},NE:{c:'New England',n:'Patriots',p:'#002244'},NO:{c:'New Orleans',n:'Saints',p:'#101820'},NYG:{c:'New York',n:'Giants',p:'#0B2265'},NYJ:{c:'New York',n:'Jets',p:'#125740'},PHI:{c:'Philadelphia',n:'Eagles',p:'#004C54'},PIT:{c:'Pittsburgh',n:'Steelers',p:'#101820'},SF:{c:'San Francisco',n:'49ers',p:'#AA0000'},SEA:{c:'Seattle',n:'Seahawks',p:'#002244'},TB:{c:'Tampa Bay',n:'Buccaneers',p:'#D50A0A'},TEN:{c:'Tennessee',n:'Titans',p:'#0C2340'},WAS:{c:'Washington',n:'Commanders',p:'#5A1414'}};
+const SLOT=[1,2,2,2,2,3,3,3,4,5];
+const GAMES=[
+ {id:'t1',a:'BUF',h:'NYJ',grp:'Thursday night',tv:'Hour 1'},
+ {id:'t2',a:'KC', h:'DEN',grp:'Sunday morning games',tv:'Hour 2'},
+ {id:'t3',a:'GB', h:'CHI',grp:'Sunday morning games',tv:'Hour 2'},
+ {id:'t4',a:'SF', h:'SEA',grp:'Sunday morning games',tv:'Hour 2'},
+ {id:'t5',a:'MIA',h:'NE', grp:'Sunday morning games',tv:'Hour 2'},
+ {id:'t6',a:'LAR',h:'ARI',grp:'Sunday afternoon games',tv:'Hour 3'},
+ {id:'t7',a:'TB', h:'CIN',grp:'Sunday afternoon games',tv:'Hour 3'},
+ {id:'t8',a:'DET',h:'MIN',grp:'Sunday afternoon games',tv:'Hour 3'},
+ {id:'t9',a:'DAL',h:'PHI',grp:'Sunday night',tv:'Hour 4'},
+ {id:'t10',a:'BAL',h:'PIT',grp:'Monday night',tv:'Hour 5',gotw:true}
+].map(function(g,i){ g.k = new Date(T0 + SLOT[i]*HOUR).toISOString();
+                     g.t = hhmm(T0 + SLOT[i]*HOUR); return g; });
 const picks={};
 
 /* A game is fixed once it kicks off, and the whole sheet closes at 1:00 PM ET Sunday.
    Two lines to change each week: this deadline, and the k: on each game above. */
-const DEADLINE = new Date('2026-09-05T13:00:00-04:00');
-const DEADLINE_TEXT = 'Saturday, September 5 at 1:00 PM ET';
+const DEADLINE = new Date(T0 + 2*HOUR);
+const DEADLINE_TEXT = hhmm(T0 + 2*HOUR) + ' today';
 const pastDeadline = () => Date.now() >= DEADLINE.getTime();
 const lockAt = g => Math.min(new Date(g.k).getTime(), DEADLINE.getTime());
 const gameLocked = g => Date.now() >= lockAt(g);
@@ -366,7 +419,7 @@ document.getElementById('slates').innerHTML=html;
 
 const gw=GAMES[GAMES.length-1];
 document.getElementById('gotw-title').textContent=TEAMS[gw.a].n+' at '+TEAMS[gw.h].n;
-document.getElementById('duel').innerHTML='<img src="'+LOGOS[gw.a]+'" alt=""><span>Sunday, September 6 &middot; 8:20 PM ET</span><img src="'+LOGOS[gw.h]+'" alt="">';
+document.getElementById('duel').innerHTML='<img src="'+LOGOS[gw.a]+'" alt=""><span>Hour 5 &middot; the last game</span><img src="'+LOGOS[gw.h]+'" alt="">';
 
 document.getElementById('tot').textContent=' / '+GAMES.length+' picked';
 const cnt=document.getElementById('cnt'), rail=document.getElementById('rail'),
@@ -400,7 +453,7 @@ function refresh(){
   hint.textContent = openLeft ? openLeft+' game'+(openLeft>1?'s':'')+' to go'
     : !named ? 'Add your name and team name'
     : tie.value==='' ? 'One score guess left'
-    : 'Ready \u2014 change picks until Sat 1:00 PM ET';
+    : 'Ready \u2014 change picks until ' + hhmm(T0+2*HOUR) + '';
 }
 document.getElementById('slates').addEventListener('click',e=>{
   const b=e.target.closest('.side'); if(!b) return;
@@ -488,7 +541,7 @@ function drawEntries(){
   el.classList.add('on');
 
   document.getElementById('mine-h').textContent =
-    closed ? (a.length > 1 ? 'Your entries for Week Zero' : 'Your entry for Week Zero')
+    closed ? (a.length > 1 ? 'Your entries for Test week' : 'Your entry for Test week')
            : (a.length > 1 ? 'Your entries on this device' : 'Your entry on this device');
 
   const active = a.find(x => x.id === activeId);
@@ -544,4 +597,12 @@ drawEntries();
 
 setInterval(refresh, 20000);   /* so a game locks itself if the page is left open */
 refresh();
+
+var __r = document.getElementById('clockreset');
+if(__r) __r.addEventListener('click', function(){
+  try{ localStorage.removeItem(CLOCK_KEY); }catch(e){}
+  try{ localStorage.removeItem('suecouser.nflpool.week0.entries'); }catch(e){}
+  location.reload();
+});
+clockBar();
 </script>

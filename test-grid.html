@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="googlebot" content="noindex, nofollow, noarchive">
-<title>Week Zero Standings</title>
+<title>Test Week Standings</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
@@ -199,9 +199,22 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 .pending h2{font-size:24px; font-weight:800; letter-spacing:-.03em}
 .pending p{color:var(--ink-2); margin:8px 0 0; max-width:56ch}
 @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+.testbar{background:#FFF6DC; border-bottom:2px solid #E9A400; color:#8A6200}
+.testbar__in{max-width:1260px; margin:0 auto; padding:12px 18px; display:flex; gap:16px;
+  align-items:center; flex-wrap:wrap; font-size:14.5px; font-weight:600; line-height:1.45}
+.testbar b{font-weight:800}
+.testbar #clockline{display:block; font-weight:500}
+.testreset{margin-left:auto; font-family:inherit; font-weight:700; font-size:13.5px;
+  background:#fff; color:#8A6200; border:2px solid #E9A400; border-radius:99px; padding:9px 16px; cursor:pointer}
+.testreset:hover{background:#FFEFC0}
 </style>
 
 <nav class="topnav"><div class="topnav__in" style="max-width:1260px"><span class="brand">Sue Couser&rsquo;s NFL Pool <em>&middot; 2026</em></span><span class="navlinks"><a class="navlink" href="test-picks.html">Pick sheet</a><a class="navlink on" href="test-grid.html">Standings</a></span></div></nav>
+<div class="testbar"><div class="testbar__in">
+<div><b>Test week</b> &mdash; a whole NFL week squeezed into five hours, one hour per slot.
+<span id="clockline"></span></div>
+<button class="testreset" id="clockreset" type="button">Restart the clock</button>
+</div></div>
 <header class="mast">
   <div class="mast__in">
     <div>
@@ -218,6 +231,43 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 
 <script>
 const LOGOS=(function(){var o={},a=["ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC", "LAC", "LAR", "LV", "MIA", "MIN", "NE", "NFL", "NO", "NYG", "NYJ", "PHI", "PIT", "SEA", "SF", "TB", "TEN", "WAS"];for(var i=0;i<a.length;i++)o[a[i]]='assets/logos/'+a[i]+'.png';return o;})();
+/* --- Test-week clock -------------------------------------------------------
+   Hour 1 = the Thursday night game.  Hour 2 = the Sunday morning games, which
+   is also when picks close.  Hour 3 = Sunday afternoon.  Hour 4 = Sunday night.
+   Hour 5 = Monday night.  The clock starts on first visit and both test pages
+   share it, so the pick sheet and the standings always agree.               */
+const HOUR = 3600*1000;
+const CLOCK_KEY = 'suecouser.nflpool.testclock';
+function testStart(){
+  try{
+    var a = localStorage.getItem(CLOCK_KEY);
+    if(!a){ a = String(Date.now()); localStorage.setItem(CLOCK_KEY, a); }
+    return Number(a);
+  }catch(e){ return Date.now(); }
+}
+const T0 = testStart();
+const hhmm = ms => new Date(ms).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+const SLOTS = [
+  {h:1, name:'Thursday night game'},
+  {h:2, name:'Sunday morning games — picks close'},
+  {h:3, name:'Sunday afternoon games'},
+  {h:4, name:'Sunday night game'},
+  {h:5, name:'Monday night game'}
+];
+function clockBar(){
+  var el = document.getElementById('clockline'); if(!el) return;
+  var now = Date.now(), next = SLOTS.find(s => now < T0 + s.h*HOUR);
+  var line = 'Clock started ' + hhmm(T0) + '. Picks close ' + hhmm(T0 + 2*HOUR) + '.';
+  if(next){
+    var mins = Math.ceil((T0 + next.h*HOUR - now)/60000);
+    line += ' Next up: ' + next.name + ' at ' + hhmm(T0 + next.h*HOUR)
+          + ' (' + (mins > 59 ? Math.floor(mins/60)+'h '+(mins%60)+'m' : mins+' min') + ').';
+  } else line += ' Every game has been played.';
+  el.textContent = line;
+}
+setInterval(clockBar, 15000);
+document.addEventListener('DOMContentLoaded', clockBar);
+
 const TEAMS={ARI:{c:'Arizona',n:'Cardinals',p:'#97233F'},ATL:{c:'Atlanta',n:'Falcons',p:'#A71930'},BAL:{c:'Baltimore',n:'Ravens',p:'#241773'},BUF:{c:'Buffalo',n:'Bills',p:'#00338D'},CAR:{c:'Carolina',n:'Panthers',p:'#0085CA'},CHI:{c:'Chicago',n:'Bears',p:'#0B162A'},CIN:{c:'Cincinnati',n:'Bengals',p:'#FB4F14'},CLE:{c:'Cleveland',n:'Browns',p:'#311D00'},DAL:{c:'Dallas',n:'Cowboys',p:'#041E42'},DEN:{c:'Denver',n:'Broncos',p:'#FB4F14'},DET:{c:'Detroit',n:'Lions',p:'#0076B6'},GB:{c:'Green Bay',n:'Packers',p:'#203731'},HOU:{c:'Houston',n:'Texans',p:'#03202F'},IND:{c:'Indianapolis',n:'Colts',p:'#002C5F'},JAX:{c:'Jacksonville',n:'Jaguars',p:'#006778'},KC:{c:'Kansas City',n:'Chiefs',p:'#E31837'},LV:{c:'Las Vegas',n:'Raiders',p:'#101820'},LAC:{c:'Los Angeles',n:'Chargers',p:'#0080C6'},LAR:{c:'Los Angeles',n:'Rams',p:'#003594'},MIA:{c:'Miami',n:'Dolphins',p:'#008E97'},MIN:{c:'Minnesota',n:'Vikings',p:'#4F2683'},NE:{c:'New England',n:'Patriots',p:'#002244'},NO:{c:'New Orleans',n:'Saints',p:'#101820'},NYG:{c:'New York',n:'Giants',p:'#0B2265'},NYJ:{c:'New York',n:'Jets',p:'#125740'},PHI:{c:'Philadelphia',n:'Eagles',p:'#004C54'},PIT:{c:'Pittsburgh',n:'Steelers',p:'#101820'},SF:{c:'San Francisco',n:'49ers',p:'#AA0000'},SEA:{c:'Seattle',n:'Seahawks',p:'#002244'},TB:{c:'Tampa Bay',n:'Buccaneers',p:'#D50A0A'},TEN:{c:'Tennessee',n:'Titans',p:'#0C2340'},WAS:{c:'Washington',n:'Commanders',p:'#5A1414'}};
 
 /* ---- who is in the pool, all season ---- */
@@ -234,10 +284,11 @@ const ENTRANTS=[
  {team:'The Waterboys',      who:'Nina Castellanos'}
 ];
 
-/* ---- Week Zero: the real schedule ---- */
+/* ---- Test week: the real schedule ---- */
 const W1=[
- {id:'t1',a:'BUF',h:'NYJ'},{id:'t2',a:'DAL',h:'PHI'},{id:'t3',a:'KC',h:'DEN'},{id:'t4',a:'GB',h:'CHI'},
- {id:'t5',a:'SF',h:'SEA'},{id:'t6',a:'MIA',h:'NE'},{id:'t7',a:'LAR',h:'ARI'},{id:'t8',a:'BAL',h:'PIT',gotw:true}
+ {id:'t1',a:'BUF',h:'NYJ'},{id:'t2',a:'KC',h:'DEN'},{id:'t3',a:'GB',h:'CHI'},{id:'t4',a:'SF',h:'SEA'},
+ {id:'t5',a:'MIA',h:'NE'},{id:'t6',a:'LAR',h:'ARI'},{id:'t7',a:'TB',h:'CIN'},{id:'t8',a:'DET',h:'MIN'},
+ {id:'t9',a:'DAL',h:'PHI'},{id:'t10',a:'BAL',h:'PIT',gotw:true}
 ];
 /* Weeks 2 onwards are placeholders until the real fixtures are typed in. */
 const ABBRS=Object.keys(TEAMS);
@@ -248,10 +299,10 @@ function placeholder(n){
   }
   return out;
 }
-const DEADLINES=['2026-09-05T13:00:00-04:00'];
-const DEADLINE_TEXT=['Saturday, September 5 at 1:00 PM ET'];
+const DEADLINES=[new Date(T0 + 2*HOUR).toISOString()];
+const DEADLINE_TEXT=[hhmm(T0 + 2*HOUR) + ' today'];
 const WEEKS=DEADLINES.map((d,i)=>({
-  n:i+1, label:'Week Zero', deadline:new Date(d), deadlineText:DEADLINE_TEXT[i],
+  n:i+1, label:'Test week', deadline:new Date(d), deadlineText:DEADLINE_TEXT[i],
   games:i===0?W1:placeholder(i+1), real:i===0, results:{}, actual:null
 }));
 
@@ -368,7 +419,7 @@ function seasonView(){
   html += '<div class="legend"><span><i class="key key--win"></i> Won that week</span>'
     + '<span>Ranked by season total, then by weeks won.</span></div>';
   if(!any) html += '<div class="pending"><h2>No weeks in the book yet</h2>'
-    + '<p>Week Zero closes '+WEEKS[0].deadlineText+'. Until a week closes its column stays empty.</p></div>';
+    + '<p>Test week closes '+WEEKS[0].deadlineText+'. Until a week closes its column stays empty.</p></div>';
   html += '<div class="note-mock">Mock-up note: ten sample sheets, and weeks two onwards use placeholder fixtures until the real schedule is typed in.</div>';
   return html;
 }
@@ -529,4 +580,12 @@ document.getElementById('tabs').addEventListener('click', e=>{
 });
 setInterval(()=>{ if(tab!=='season'){ const w=WEEKS.find(x=>x.n===tab); if(w && !revealed(w)) drawClock(w); } }, 1000);
 render();
+
+var __r = document.getElementById('clockreset');
+if(__r) __r.addEventListener('click', function(){
+  try{ localStorage.removeItem(CLOCK_KEY); }catch(e){}
+  try{ localStorage.removeItem('suecouser.nflpool.week0.entries'); }catch(e){}
+  location.reload();
+});
+clockBar();
 </script>
