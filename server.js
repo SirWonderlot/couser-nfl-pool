@@ -290,7 +290,8 @@ const server = http.createServer((req, res) => {
     return;
   }
   let rel = decodeURIComponent(url.pathname);
-  if(rel.endsWith('/')) rel += 'index.html';
+  if(rel === '/') rel = '/picks.html';        /* the front door is the pick sheet */
+  else if(rel.endsWith('/')) rel += 'index.html';
   const file = path.join(PUBLIC, rel);
   if(!file.startsWith(PUBLIC)){ res.writeHead(403); return res.end('No'); }
   serveFile(res, file);

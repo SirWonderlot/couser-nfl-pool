@@ -118,8 +118,6 @@ input{font:inherit; color:inherit}
   display:grid; place-items:center; font-size:13px; font-weight:800; box-shadow:inset 0 0 0 2px var(--hit)}
 .inlist b{display:block; font-weight:600; font-size:15px; letter-spacing:-.01em}
 .inlist span{display:block; font-size:12.5px; color:var(--ink-3)}
-.peek{margin-top:28px; padding-top:22px; border-top:2px solid var(--line); display:flex; align-items:center; gap:16px; flex-wrap:wrap}
-.peek p{margin:0; color:var(--ink-3); font-size:13.5px; max-width:44ch}
 
 /* tables */
 .scroller{margin-top:20px; overflow-x:auto; background:var(--card); border-radius:26px; box-shadow:var(--shadow)}
@@ -199,8 +197,6 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 .key--hit{background:var(--hit-bg); box-shadow:inset 0 0 0 2px var(--hit)}
 .key--miss{background:var(--miss-bg)}
 .key--win{background:var(--win-bg); box-shadow:inset 0 0 0 2px var(--win)}
-.note-mock{margin-top:24px; padding:16px 20px; background:var(--card); border-radius:20px;
-  color:var(--ink-3); font-size:13.5px; box-shadow:var(--shadow)}
 .pending{background:var(--card); border-radius:26px; box-shadow:var(--shadow); padding:34px; margin-top:24px}
 .pending h2{font-size:24px; font-weight:800; letter-spacing:-.03em}
 .pending p{color:var(--ink-2); margin:8px 0 0; max-width:56ch}
@@ -277,30 +273,16 @@ const W1=[
  {id:'g9',a:'CLE',h:'JAX'},{id:'g10',a:'NYJ',h:'TEN'},{id:'g11',a:'ARI',h:'LAC'},{id:'g12',a:'GB',h:'MIN'},
  {id:'g13',a:'MIA',h:'LV'},{id:'g14',a:'WAS',h:'PHI'},{id:'g15',a:'DAL',h:'NYG'},{id:'g16',a:'DEN',h:'KC',gotw:true}
 ];
-/* Weeks 2 onwards are placeholders until the real fixtures are typed in. */
-const ABBRS=Object.keys(TEAMS);
-function placeholder(n){
-  const off=(n*2)%32, out=[];
-  for(let i=0;i<16;i++){
-    out.push({id:'w'+n+'g'+(i+1), a:ABBRS[(i*2+off)%32], h:ABBRS[(i*2+1+off)%32], gotw:i===15});
-  }
-  return out;
-}
-const DEADLINES=['2026-09-13T13:00:00-04:00','2026-09-20T13:00:00-04:00','2026-09-27T13:00:00-04:00','2026-10-04T13:00:00-04:00'];
-const DEADLINE_TEXT=['Sunday, September 13 at 1:00 PM ET','Sunday, September 20 at 1:00 PM ET',
-                     'Sunday, September 27 at 1:00 PM ET','Sunday, October 4 at 1:00 PM ET'];
+/* One entry per week that has a real schedule. To add Week 2: paste its games
+   into a W2 list, add it to GAMES_BY_WEEK, and add its deadline below. The
+   same deadline must go into DEADLINES in server.js. */
+const GAMES_BY_WEEK=[W1];
+const DEADLINES=['2026-09-13T13:00:00-04:00'];
+const DEADLINE_TEXT=['Sunday, September 13 at 1:00 PM ET'];
 const WEEKS=DEADLINES.map((d,i)=>({
   n:i+1, label:'Week '+(i+1), deadline:new Date(d), deadlineText:DEADLINE_TEXT[i],
-  games:i===0?W1:placeholder(i+1), real:i===0, results:{}, actual:null
+  games:GAMES_BY_WEEK[i], results:{}, actual:null
 }));
-
-/* ---- sample sheets, so the shape of the thing is visible ---- */
-function seed(s){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619);} return (h>>>0)%1000; }
-WEEKS.forEach(w=>{
-  w.sample = {};                       /* a stand-in result set, for the preview button */
-  w.games.forEach(g=>{ w.sample[g.id] = seed('res|w'+w.n+'|'+g.id)<520 ? g.h : g.a; });
-  w.sampleActual = 41 + w.n*3;
-});
 
 /* A week stays "now" until its last game is done, roughly 36 hours past the
    deadline, which covers the Sunday afternoon games through Monday night. */
@@ -326,18 +308,15 @@ function sheetsIn(w){ const p = POOL[w.n]; return p ? (p.roster || []) : []; }
 function serverRevealed(w){ const p = POOL[w.n]; return p ? !!p.revealed : null; }
 
 let tab = currentWeekN();     /* 'season' or a week number */
-let preview = false;          /* mock-up only: show the season as if it had been played */
 
-const revealed = w => preview || (serverRevealed(w) !== null ? serverRevealed(w)
-                                                             : Date.now() >= w.deadline.getTime());
+const revealed = w => serverRevealed(w) !== null ? serverRevealed(w)
+                                                : Date.now() >= w.deadline.getTime();
 function resultsOf(w){
-  if(preview) return w.sample;
   const p = POOL[w.n];
   if(p && p.results && p.results.winners && Object.keys(p.results.winners).length) return p.results.winners;
   return w.results;
 }
 function actualOf(w){
-  if(preview) return w.sampleActual;
   if(w.actual != null) return w.actual;
   const p = POOL[w.n];
   return (p && p.results && p.results.actual != null) ? p.results.actual : null;
@@ -408,10 +387,7 @@ function seasonView(){
     + '<div class="stat"><span>Weeks played</span><b>'+WEEKS.filter(w=>revealed(w)&&called(w)).length+' of '+WEEKS.length+'</b></div>'
     + '<div class="stat lead"><span>Leading</span><b>'+(any?esc(rows[0].e.team):'&mdash;')+'</b></div>';
 
-  let html = '<div class="controls"><div class="controls__lead">The season so far'
-    + '<span>Open a week above to see the picks behind these numbers.</span></div><div class="spacer"></div>'
-    + '<button class="btn" id="preview">'+(preview?'Back to the real table':'Preview a played season')+'</button></div>';
-
+  let html = '';
   html += '<div class="scroller"><table class="stand"><thead><tr>'
     + '<th class="c-rank hd">#</th><th class="c-team hd">Team</th>'
     + WEEKS.map(w=>'<th class="wkcol hd">'+w.label.replace('Week ','Wk ')+'</th>').join('')
@@ -439,7 +415,6 @@ function seasonView(){
     + '<span>Ranked by season total, then by weeks won.</span></div>';
   if(!any) html += '<div class="pending"><h2>No weeks in the book yet</h2>'
     + '<p>Week One closes '+WEEKS[0].deadlineText+'. Until a week closes its column stays empty.</p></div>';
-  html += '<div class="note-mock">Mock-up note: ten sample sheets, and weeks two onwards use placeholder fixtures until the real schedule is typed in.</div>';
   return html;
 }
 
@@ -464,7 +439,6 @@ function weekView(w){
     + '<div class="ctl"><label for="actual">Game of the Week total</label>'
     + '<input id="actual" type="number" min="0" max="120" inputmode="numeric" placeholder="&mdash;" value="'+(actualOf(w)??'')+'"></div>'
     + '<div class="spacer"></div>'
-    + '<button class="btn" id="demo">Fill in a sample week</button>'
     + '<button class="btn" id="clear">Clear results</button>'
     + '<button class="btn btn--go" id="copy">Copy grid</button></div>';
 
@@ -518,7 +492,6 @@ function weekView(w){
     + '<span><i class="key key--miss"></i> Missed</span>'
     + '<span><i class="key key--win"></i> Winner of the week</span>'
     + '<span>Rows re-sort by score the moment a game is called.</span></div>';
-  if(!w.real) html += '<div class="note-mock">'+w.label+' uses placeholder fixtures. Drop the real schedule in and everything else here keeps working.</div>';
   return html;
 }
 
@@ -540,9 +513,7 @@ function sealedView(w){
         ? '<ul class="inlist">'+sheetsIn(w).map(e=>'<li><span class="ok">✓</span><div><b>'+esc(e.team)
             +'</b><span>'+esc(e.person||'\u2014')+'</span></div></li>').join('')+'</ul>'
         : '<p style="color:var(--ink-3); margin-top:10px">Nobody has sent a sheet in yet.</p>')
-    + '<div class="peek"><button class="btn" id="preview">Preview the revealed grid</button>'
-    + '<p>Mock-up control only. On the real thing there is no way to look early.</p></div></section>'
-    + '<div class="note-mock">Mock-up note: ten sample sheets. Once the pick sheet saves for real, submissions land here as they arrive.</div>';
+    + '</section>';
 }
 
 /* ------------------------------------------------------------------ wiring */
@@ -567,13 +538,10 @@ function render(){
 }
 function wire(){
   const w = tab==='season' ? null : WEEKS.find(x=>x.n===tab);
-  const pv = document.getElementById('preview');
-  if(pv) pv.addEventListener('click', ()=>{ preview = !preview; render(); });
   if(!w) return;
   const head = document.querySelector('thead');
   if(head) head.addEventListener('click', e=>{
     const b = e.target.closest('.gh__pick'); if(!b) return;
-    if(preview){ preview = false; w.results = Object.assign({}, w.sample); w.actual = w.sampleActual; }
     if(!Object.keys(w.results).length) w.results = Object.assign({}, resultsOf(w));
     if(w.results[b.dataset.game] === b.dataset.team) delete w.results[b.dataset.game];
     else w.results[b.dataset.game] = b.dataset.team;
@@ -581,8 +549,6 @@ function wire(){
   });
   const act = document.getElementById('actual');
   if(act) act.addEventListener('input', e=>{ w.actual = e.target.value==='' ? null : Number(e.target.value); pushResults(w); render(); });
-  const demo = document.getElementById('demo');
-  if(demo) demo.addEventListener('click', ()=>{ w.results = Object.assign({}, w.sample); w.actual = w.sampleActual; preview=false; pushResults(w); render(); });
   const clr = document.getElementById('clear');
   if(clr) clr.addEventListener('click', ()=>{ w.results = {}; w.actual = null; pushResults(w); render(); });
   const cp = document.getElementById('copy');

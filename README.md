@@ -38,8 +38,22 @@ who has entered.
 | `GET /api/contacts/:n` | names, emails and phones, needs `x-admin-key` |
 | `POST /api/test-reset` | restart the test week's clock and clear its entries |
 
-## Setting up a new week
+## Adding a week
 
-`DEADLINES` at the top of `server.js` must match the deadline in
-`public/picks.html`, and the `GAMES` list in `picks.html` must match the one in
-`grid.html`. The server is the one that counts — the pages only display it.
+Only weeks with a real schedule get a tab, so Week 2 appears when you add it.
+Four places, all near the top of the relevant file:
+
+1. `server.js` — add the week's deadline to `DEADLINES`. This is the one that
+   counts; the pages only display it.
+2. `../picks.src.html` — add the games to `GAMES` (each needs `k`, its kickoff)
+   and set `DEADLINE` / `DEADLINE_TEXT`. Bump the storage key to `week2`.
+3. `../grid.src.html` — add a `W2` list of the same games, put it in
+   `GAMES_BY_WEEK`, and add the deadline to `DEADLINES` / `DEADLINE_TEXT`.
+4. Run `python3 ../build-site.py`, commit, push.
+
+## Trying things out
+
+`public/test-picks.html` and `public/test-grid.html` are a whole week squeezed
+into five hours, one hour per slot, sharing a clock the server holds. Nothing
+links to them — go straight to the address. `POST /api/test-reset` restarts the
+clock and clears that week.
