@@ -22,13 +22,12 @@ const PUBLIC = path.join(__dirname, 'public');
 const ADMIN  = process.env.ADMIN_KEY || '';
 
 /* ------------------------------------------------------------ the calendar */
-/* Picks for a week close at this moment. Change these each season. */
-const DEADLINES = {
-  1: '2026-09-13T13:00:00-04:00',
-  2: '2026-09-20T13:00:00-04:00',
-  3: '2026-09-27T13:00:00-04:00',
-  4: '2026-10-04T13:00:00-04:00'
-};
+/* Picks close when schedule.json says they do. The pages read the same file,
+   so the server and the browser can never disagree about the deadline. */
+const SCHEDULE = JSON.parse(fs.readFileSync(path.join(__dirname, 'schedule.json'), 'utf8'));
+const DEADLINES = Object.fromEntries(
+  Object.values(SCHEDULE).map(w => [w.n, w.deadline]));
+
 const TEST_WEEK = 0;          // the compressed week used for trying things out
 const TEST_HOURS = 2;         // picks close two hours after the test clock starts
 

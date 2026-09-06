@@ -220,6 +220,2672 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 
 <script>
 const LOGOS=(function(){var o={},a=["ARI", "ATL", "BAL", "BUF", "CAR", "CHI", "CIN", "CLE", "DAL", "DEN", "DET", "GB", "HOU", "IND", "JAX", "KC", "LAC", "LAR", "LV", "MIA", "MIN", "NE", "NFL", "NO", "NYG", "NYJ", "PHI", "PIT", "SEA", "SF", "TB", "TEN", "WAS"];for(var i=0;i<a.length;i++)o[a[i]]='assets/logos/'+a[i]+'.png';return o;})();
+const SCHEDULE = {
+ "1": {
+  "n": 1,
+  "word": "One",
+  "deadline": "2026-09-13T13:00:00-04:00",
+  "deadlineText": "Sunday, September 13 at 1:00 PM ET",
+  "firstGame": "Wednesday, September 9",
+  "firstTime": "8:20 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w1g1",
+    "a": "NE",
+    "h": "SEA",
+    "k": "2026-09-09T20:20:00-04:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Wednesday Night &middot; September 9"
+   },
+   {
+    "id": "w1g2",
+    "a": "SF",
+    "h": "LAR",
+    "k": "2026-09-10T20:35:00-04:00",
+    "t": "8:35 PM ET",
+    "tv": "Netflix",
+    "grp": "Thursday Night &middot; September 10"
+   },
+   {
+    "id": "w1g3",
+    "a": "ATL",
+    "h": "PIT",
+    "k": "2026-09-13T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 13 &middot; Early games"
+   },
+   {
+    "id": "w1g4",
+    "a": "BAL",
+    "h": "IND",
+    "k": "2026-09-13T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 13 &middot; Early games"
+   },
+   {
+    "id": "w1g5",
+    "a": "BUF",
+    "h": "HOU",
+    "k": "2026-09-13T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 13 &middot; Early games"
+   },
+   {
+    "id": "w1g6",
+    "a": "CHI",
+    "h": "CAR",
+    "k": "2026-09-13T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 13 &middot; Early games"
+   },
+   {
+    "id": "w1g7",
+    "a": "CLE",
+    "h": "JAX",
+    "k": "2026-09-13T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 13 &middot; Early games"
+   },
+   {
+    "id": "w1g8",
+    "a": "NO",
+    "h": "DET",
+    "k": "2026-09-13T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 13 &middot; Early games"
+   },
+   {
+    "id": "w1g9",
+    "a": "NYJ",
+    "h": "TEN",
+    "k": "2026-09-13T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 13 &middot; Early games"
+   },
+   {
+    "id": "w1g10",
+    "a": "TB",
+    "h": "CIN",
+    "k": "2026-09-13T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 13 &middot; Early games"
+   },
+   {
+    "id": "w1g11",
+    "a": "ARI",
+    "h": "LAC",
+    "k": "2026-09-13T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 13 &middot; Late games"
+   },
+   {
+    "id": "w1g12",
+    "a": "GB",
+    "h": "MIN",
+    "k": "2026-09-13T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 13 &middot; Late games"
+   },
+   {
+    "id": "w1g13",
+    "a": "MIA",
+    "h": "LV",
+    "k": "2026-09-13T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 13 &middot; Late games"
+   },
+   {
+    "id": "w1g14",
+    "a": "WAS",
+    "h": "PHI",
+    "k": "2026-09-13T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 13 &middot; Late games"
+   },
+   {
+    "id": "w1g15",
+    "a": "DAL",
+    "h": "NYG",
+    "k": "2026-09-13T20:20:00-04:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; September 13"
+   },
+   {
+    "id": "w1g16",
+    "a": "DEN",
+    "h": "KC",
+    "k": "2026-09-14T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; September 14",
+    "gotw": true
+   }
+  ]
+ },
+ "2": {
+  "n": 2,
+  "word": "Two",
+  "deadline": "2026-09-20T13:00:00-04:00",
+  "deadlineText": "Sunday, September 20 at 1:00 PM ET",
+  "firstGame": "Thursday, September 17",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w2g1",
+    "a": "DET",
+    "h": "BUF",
+    "k": "2026-09-17T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; September 17"
+   },
+   {
+    "id": "w2g2",
+    "a": "CAR",
+    "h": "ATL",
+    "k": "2026-09-20T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 20 &middot; Early games"
+   },
+   {
+    "id": "w2g3",
+    "a": "CIN",
+    "h": "HOU",
+    "k": "2026-09-20T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 20 &middot; Early games"
+   },
+   {
+    "id": "w2g4",
+    "a": "CLE",
+    "h": "TB",
+    "k": "2026-09-20T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 20 &middot; Early games"
+   },
+   {
+    "id": "w2g5",
+    "a": "GB",
+    "h": "NYJ",
+    "k": "2026-09-20T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 20 &middot; Early games"
+   },
+   {
+    "id": "w2g6",
+    "a": "MIN",
+    "h": "CHI",
+    "k": "2026-09-20T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 20 &middot; Early games"
+   },
+   {
+    "id": "w2g7",
+    "a": "NO",
+    "h": "BAL",
+    "k": "2026-09-20T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 20 &middot; Early games"
+   },
+   {
+    "id": "w2g8",
+    "a": "PHI",
+    "h": "TEN",
+    "k": "2026-09-20T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 20 &middot; Early games"
+   },
+   {
+    "id": "w2g9",
+    "a": "PIT",
+    "h": "NE",
+    "k": "2026-09-20T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 20 &middot; Early games"
+   },
+   {
+    "id": "w2g10",
+    "a": "JAX",
+    "h": "DEN",
+    "k": "2026-09-20T16:05:00-04:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 20 &middot; Late games"
+   },
+   {
+    "id": "w2g11",
+    "a": "LV",
+    "h": "LAC",
+    "k": "2026-09-20T16:05:00-04:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 20 &middot; Late games"
+   },
+   {
+    "id": "w2g12",
+    "a": "MIA",
+    "h": "SF",
+    "k": "2026-09-20T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 20 &middot; Late games"
+   },
+   {
+    "id": "w2g13",
+    "a": "SEA",
+    "h": "ARI",
+    "k": "2026-09-20T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 20 &middot; Late games"
+   },
+   {
+    "id": "w2g14",
+    "a": "WAS",
+    "h": "DAL",
+    "k": "2026-09-20T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 20 &middot; Late games"
+   },
+   {
+    "id": "w2g15",
+    "a": "IND",
+    "h": "KC",
+    "k": "2026-09-20T20:20:00-04:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; September 20"
+   },
+   {
+    "id": "w2g16",
+    "a": "NYG",
+    "h": "LAR",
+    "k": "2026-09-21T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; September 21",
+    "gotw": true
+   }
+  ]
+ },
+ "3": {
+  "n": 3,
+  "word": "Three",
+  "deadline": "2026-09-27T13:00:00-04:00",
+  "deadlineText": "Sunday, September 27 at 1:00 PM ET",
+  "firstGame": "Thursday, September 24",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w3g1",
+    "a": "ATL",
+    "h": "GB",
+    "k": "2026-09-24T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; September 24"
+   },
+   {
+    "id": "w3g2",
+    "a": "CAR",
+    "h": "CLE",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g3",
+    "a": "CIN",
+    "h": "PIT",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g4",
+    "a": "HOU",
+    "h": "IND",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g5",
+    "a": "KC",
+    "h": "MIA",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g6",
+    "a": "LAC",
+    "h": "BUF",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g7",
+    "a": "NE",
+    "h": "JAX",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g8",
+    "a": "NYJ",
+    "h": "DET",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g9",
+    "a": "SEA",
+    "h": "WAS",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g10",
+    "a": "TEN",
+    "h": "NYG",
+    "k": "2026-09-27T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 27 &middot; Early games"
+   },
+   {
+    "id": "w3g11",
+    "a": "ARI",
+    "h": "SF",
+    "k": "2026-09-27T16:05:00-04:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 27 &middot; Late games"
+   },
+   {
+    "id": "w3g12",
+    "a": "MIN",
+    "h": "TB",
+    "k": "2026-09-27T16:05:00-04:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; September 27 &middot; Late games"
+   },
+   {
+    "id": "w3g13",
+    "a": "BAL",
+    "h": "DAL",
+    "k": "2026-09-27T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 27 &middot; Late games"
+   },
+   {
+    "id": "w3g14",
+    "a": "LV",
+    "h": "NO",
+    "k": "2026-09-27T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; September 27 &middot; Late games"
+   },
+   {
+    "id": "w3g15",
+    "a": "LAR",
+    "h": "DEN",
+    "k": "2026-09-27T20:20:00-04:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; September 27"
+   },
+   {
+    "id": "w3g16",
+    "a": "PHI",
+    "h": "CHI",
+    "k": "2026-09-28T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; September 28",
+    "gotw": true
+   }
+  ]
+ },
+ "4": {
+  "n": 4,
+  "word": "Four",
+  "deadline": "2026-10-04T13:00:00-04:00",
+  "deadlineText": "Sunday, October 4 at 1:00 PM ET",
+  "firstGame": "Thursday, October 1",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w4g1",
+    "a": "PIT",
+    "h": "CLE",
+    "k": "2026-10-01T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; October 1"
+   },
+   {
+    "id": "w4g2",
+    "a": "IND",
+    "h": "WAS",
+    "k": "2026-10-04T09:30:00-04:00",
+    "t": "9:30 AM ET",
+    "tv": "NFL Network",
+    "grp": "Sunday Morning &middot; October 4"
+   },
+   {
+    "id": "w4g3",
+    "a": "ARI",
+    "h": "NYG",
+    "k": "2026-10-04T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 4 &middot; Early games"
+   },
+   {
+    "id": "w4g4",
+    "a": "DAL",
+    "h": "HOU",
+    "k": "2026-10-04T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 4 &middot; Early games"
+   },
+   {
+    "id": "w4g5",
+    "a": "GB",
+    "h": "TB",
+    "k": "2026-10-04T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 4 &middot; Early games"
+   },
+   {
+    "id": "w4g6",
+    "a": "JAX",
+    "h": "CIN",
+    "k": "2026-10-04T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 4 &middot; Early games"
+   },
+   {
+    "id": "w4g7",
+    "a": "LAR",
+    "h": "PHI",
+    "k": "2026-10-04T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 4 &middot; Early games"
+   },
+   {
+    "id": "w4g8",
+    "a": "NE",
+    "h": "BUF",
+    "k": "2026-10-04T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 4 &middot; Early games"
+   },
+   {
+    "id": "w4g9",
+    "a": "NYJ",
+    "h": "CHI",
+    "k": "2026-10-04T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 4 &middot; Early games"
+   },
+   {
+    "id": "w4g10",
+    "a": "TEN",
+    "h": "BAL",
+    "k": "2026-10-04T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 4 &middot; Early games"
+   },
+   {
+    "id": "w4g11",
+    "a": "MIA",
+    "h": "MIN",
+    "k": "2026-10-04T16:05:00-04:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 4 &middot; Late games"
+   },
+   {
+    "id": "w4g12",
+    "a": "DEN",
+    "h": "SF",
+    "k": "2026-10-04T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 4 &middot; Late games"
+   },
+   {
+    "id": "w4g13",
+    "a": "KC",
+    "h": "LV",
+    "k": "2026-10-04T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 4 &middot; Late games"
+   },
+   {
+    "id": "w4g14",
+    "a": "LAC",
+    "h": "SEA",
+    "k": "2026-10-04T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 4 &middot; Late games"
+   },
+   {
+    "id": "w4g15",
+    "a": "DET",
+    "h": "CAR",
+    "k": "2026-10-04T20:20:00-04:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; October 4"
+   },
+   {
+    "id": "w4g16",
+    "a": "ATL",
+    "h": "NO",
+    "k": "2026-10-05T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; October 5",
+    "gotw": true
+   }
+  ]
+ },
+ "5": {
+  "n": 5,
+  "word": "Five",
+  "deadline": "2026-10-11T13:00:00-04:00",
+  "deadlineText": "Sunday, October 11 at 1:00 PM ET",
+  "firstGame": "Thursday, October 8",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w5g1",
+    "a": "TB",
+    "h": "DAL",
+    "k": "2026-10-08T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; October 8"
+   },
+   {
+    "id": "w5g2",
+    "a": "PHI",
+    "h": "JAX",
+    "k": "2026-10-11T09:30:00-04:00",
+    "t": "9:30 AM ET",
+    "tv": "NFL Network",
+    "grp": "Sunday Morning &middot; October 11"
+   },
+   {
+    "id": "w5g3",
+    "a": "CIN",
+    "h": "MIA",
+    "k": "2026-10-11T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 11 &middot; Early games"
+   },
+   {
+    "id": "w5g4",
+    "a": "CLE",
+    "h": "NYJ",
+    "k": "2026-10-11T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 11 &middot; Early games"
+   },
+   {
+    "id": "w5g5",
+    "a": "HOU",
+    "h": "TEN",
+    "k": "2026-10-11T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 11 &middot; Early games"
+   },
+   {
+    "id": "w5g6",
+    "a": "IND",
+    "h": "PIT",
+    "k": "2026-10-11T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 11 &middot; Early games"
+   },
+   {
+    "id": "w5g7",
+    "a": "LV",
+    "h": "NE",
+    "k": "2026-10-11T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 11 &middot; Early games"
+   },
+   {
+    "id": "w5g8",
+    "a": "MIN",
+    "h": "NO",
+    "k": "2026-10-11T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 11 &middot; Early games"
+   },
+   {
+    "id": "w5g9",
+    "a": "NYG",
+    "h": "WAS",
+    "k": "2026-10-11T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 11 &middot; Early games"
+   },
+   {
+    "id": "w5g10",
+    "a": "DEN",
+    "h": "LAC",
+    "k": "2026-10-11T16:05:00-04:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 11 &middot; Late games"
+   },
+   {
+    "id": "w5g11",
+    "a": "CHI",
+    "h": "GB",
+    "k": "2026-10-11T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 11 &middot; Late games"
+   },
+   {
+    "id": "w5g12",
+    "a": "DET",
+    "h": "ARI",
+    "k": "2026-10-11T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 11 &middot; Late games"
+   },
+   {
+    "id": "w5g13",
+    "a": "SF",
+    "h": "SEA",
+    "k": "2026-10-11T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 11 &middot; Late games"
+   },
+   {
+    "id": "w5g14",
+    "a": "BAL",
+    "h": "ATL",
+    "k": "2026-10-11T20:20:00-04:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; October 11"
+   },
+   {
+    "id": "w5g15",
+    "a": "BUF",
+    "h": "LAR",
+    "k": "2026-10-12T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; October 12",
+    "gotw": true
+   }
+  ]
+ },
+ "6": {
+  "n": 6,
+  "word": "Six",
+  "deadline": "2026-10-18T13:00:00-04:00",
+  "deadlineText": "Sunday, October 18 at 1:00 PM ET",
+  "firstGame": "Thursday, October 15",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w6g1",
+    "a": "SEA",
+    "h": "DEN",
+    "k": "2026-10-15T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; October 15"
+   },
+   {
+    "id": "w6g2",
+    "a": "HOU",
+    "h": "JAX",
+    "k": "2026-10-18T09:30:00-04:00",
+    "t": "9:30 AM ET",
+    "tv": "NFL Network",
+    "grp": "Sunday Morning &middot; October 18"
+   },
+   {
+    "id": "w6g3",
+    "a": "BAL",
+    "h": "CLE",
+    "k": "2026-10-18T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 18 &middot; Early games"
+   },
+   {
+    "id": "w6g4",
+    "a": "CAR",
+    "h": "PHI",
+    "k": "2026-10-18T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 18 &middot; Early games"
+   },
+   {
+    "id": "w6g5",
+    "a": "CHI",
+    "h": "ATL",
+    "k": "2026-10-18T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 18 &middot; Early games"
+   },
+   {
+    "id": "w6g6",
+    "a": "NO",
+    "h": "NYG",
+    "k": "2026-10-18T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 18 &middot; Early games"
+   },
+   {
+    "id": "w6g7",
+    "a": "NYJ",
+    "h": "NE",
+    "k": "2026-10-18T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 18 &middot; Early games"
+   },
+   {
+    "id": "w6g8",
+    "a": "PIT",
+    "h": "TB",
+    "k": "2026-10-18T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 18 &middot; Early games"
+   },
+   {
+    "id": "w6g9",
+    "a": "TEN",
+    "h": "IND",
+    "k": "2026-10-18T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 18 &middot; Early games"
+   },
+   {
+    "id": "w6g10",
+    "a": "ARI",
+    "h": "LAR",
+    "k": "2026-10-18T16:05:00-04:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 18 &middot; Late games"
+   },
+   {
+    "id": "w6g11",
+    "a": "BUF",
+    "h": "LV",
+    "k": "2026-10-18T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 18 &middot; Late games"
+   },
+   {
+    "id": "w6g12",
+    "a": "LAC",
+    "h": "KC",
+    "k": "2026-10-18T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 18 &middot; Late games"
+   },
+   {
+    "id": "w6g13",
+    "a": "DAL",
+    "h": "GB",
+    "k": "2026-10-18T20:20:00-04:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; October 18"
+   },
+   {
+    "id": "w6g14",
+    "a": "WAS",
+    "h": "SF",
+    "k": "2026-10-19T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; October 19",
+    "gotw": true
+   }
+  ]
+ },
+ "7": {
+  "n": 7,
+  "word": "Seven",
+  "deadline": "2026-10-25T13:00:00-04:00",
+  "deadlineText": "Sunday, October 25 at 1:00 PM ET",
+  "firstGame": "Thursday, October 22",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w7g1",
+    "a": "NE",
+    "h": "CHI",
+    "k": "2026-10-22T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; October 22"
+   },
+   {
+    "id": "w7g2",
+    "a": "PIT",
+    "h": "NO",
+    "k": "2026-10-25T09:30:00-04:00",
+    "t": "9:30 AM ET",
+    "tv": "NFL Network",
+    "grp": "Sunday Morning &middot; October 25"
+   },
+   {
+    "id": "w7g3",
+    "a": "CIN",
+    "h": "BAL",
+    "k": "2026-10-25T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 25 &middot; Early games"
+   },
+   {
+    "id": "w7g4",
+    "a": "CLE",
+    "h": "TEN",
+    "k": "2026-10-25T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 25 &middot; Early games"
+   },
+   {
+    "id": "w7g5",
+    "a": "IND",
+    "h": "MIN",
+    "k": "2026-10-25T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 25 &middot; Early games"
+   },
+   {
+    "id": "w7g6",
+    "a": "MIA",
+    "h": "NYJ",
+    "k": "2026-10-25T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 25 &middot; Early games"
+   },
+   {
+    "id": "w7g7",
+    "a": "NYG",
+    "h": "HOU",
+    "k": "2026-10-25T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 25 &middot; Early games"
+   },
+   {
+    "id": "w7g8",
+    "a": "SF",
+    "h": "ATL",
+    "k": "2026-10-25T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 25 &middot; Early games"
+   },
+   {
+    "id": "w7g9",
+    "a": "TB",
+    "h": "CAR",
+    "k": "2026-10-25T13:00:00-04:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 25 &middot; Early games"
+   },
+   {
+    "id": "w7g10",
+    "a": "DEN",
+    "h": "ARI",
+    "k": "2026-10-25T16:05:00-04:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; October 25 &middot; Late games"
+   },
+   {
+    "id": "w7g11",
+    "a": "GB",
+    "h": "DET",
+    "k": "2026-10-25T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 25 &middot; Late games"
+   },
+   {
+    "id": "w7g12",
+    "a": "LAR",
+    "h": "LV",
+    "k": "2026-10-25T16:25:00-04:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; October 25 &middot; Late games"
+   },
+   {
+    "id": "w7g13",
+    "a": "KC",
+    "h": "SEA",
+    "k": "2026-10-25T20:20:00-04:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; October 25"
+   },
+   {
+    "id": "w7g14",
+    "a": "DAL",
+    "h": "PHI",
+    "k": "2026-10-26T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; October 26",
+    "gotw": true
+   }
+  ]
+ },
+ "8": {
+  "n": 8,
+  "word": "Eight",
+  "deadline": "2026-11-01T13:00:00-05:00",
+  "deadlineText": "Sunday, November 1 at 1:00 PM ET",
+  "firstGame": "Thursday, October 29",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w8g1",
+    "a": "CAR",
+    "h": "GB",
+    "k": "2026-10-29T20:15:00-04:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; October 29"
+   },
+   {
+    "id": "w8g2",
+    "a": "ARI",
+    "h": "DAL",
+    "k": "2026-11-01T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 1 &middot; Early games"
+   },
+   {
+    "id": "w8g3",
+    "a": "ATL",
+    "h": "TB",
+    "k": "2026-11-01T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 1 &middot; Early games"
+   },
+   {
+    "id": "w8g4",
+    "a": "BAL",
+    "h": "BUF",
+    "k": "2026-11-01T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 1 &middot; Early games"
+   },
+   {
+    "id": "w8g5",
+    "a": "CLE",
+    "h": "PIT",
+    "k": "2026-11-01T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 1 &middot; Early games"
+   },
+   {
+    "id": "w8g6",
+    "a": "IND",
+    "h": "JAX",
+    "k": "2026-11-01T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 1 &middot; Early games"
+   },
+   {
+    "id": "w8g7",
+    "a": "LV",
+    "h": "NYJ",
+    "k": "2026-11-01T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 1 &middot; Early games"
+   },
+   {
+    "id": "w8g8",
+    "a": "MIN",
+    "h": "DET",
+    "k": "2026-11-01T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 1 &middot; Early games"
+   },
+   {
+    "id": "w8g9",
+    "a": "TEN",
+    "h": "CIN",
+    "k": "2026-11-01T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 1 &middot; Early games"
+   },
+   {
+    "id": "w8g10",
+    "a": "LAC",
+    "h": "LAR",
+    "k": "2026-11-01T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 1 &middot; Late games"
+   },
+   {
+    "id": "w8g11",
+    "a": "KC",
+    "h": "DEN",
+    "k": "2026-11-01T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 1 &middot; Late games"
+   },
+   {
+    "id": "w8g12",
+    "a": "NE",
+    "h": "MIA",
+    "k": "2026-11-01T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 1 &middot; Late games"
+   },
+   {
+    "id": "w8g13",
+    "a": "PHI",
+    "h": "WAS",
+    "k": "2026-11-01T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; November 1"
+   },
+   {
+    "id": "w8g14",
+    "a": "CHI",
+    "h": "SEA",
+    "k": "2026-11-02T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; November 2",
+    "gotw": true
+   }
+  ]
+ },
+ "9": {
+  "n": 9,
+  "word": "Nine",
+  "deadline": "2026-11-08T13:00:00-05:00",
+  "deadlineText": "Sunday, November 8 at 1:00 PM ET",
+  "firstGame": "Thursday, November 5",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w9g1",
+    "a": "JAX",
+    "h": "BAL",
+    "k": "2026-11-05T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; November 5"
+   },
+   {
+    "id": "w9g2",
+    "a": "CIN",
+    "h": "ATL",
+    "k": "2026-11-08T09:30:00-05:00",
+    "t": "9:30 AM ET",
+    "tv": "NFL Network",
+    "grp": "Sunday Morning &middot; November 8"
+   },
+   {
+    "id": "w9g3",
+    "a": "CLE",
+    "h": "NO",
+    "k": "2026-11-08T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 8 &middot; Early games"
+   },
+   {
+    "id": "w9g4",
+    "a": "DAL",
+    "h": "IND",
+    "k": "2026-11-08T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 8 &middot; Early games"
+   },
+   {
+    "id": "w9g5",
+    "a": "DEN",
+    "h": "CAR",
+    "k": "2026-11-08T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 8 &middot; Early games"
+   },
+   {
+    "id": "w9g6",
+    "a": "DET",
+    "h": "MIA",
+    "k": "2026-11-08T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 8 &middot; Early games"
+   },
+   {
+    "id": "w9g7",
+    "a": "LAR",
+    "h": "WAS",
+    "k": "2026-11-08T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 8 &middot; Early games"
+   },
+   {
+    "id": "w9g8",
+    "a": "NYG",
+    "h": "PHI",
+    "k": "2026-11-08T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 8 &middot; Early games"
+   },
+   {
+    "id": "w9g9",
+    "a": "NYJ",
+    "h": "KC",
+    "k": "2026-11-08T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 8 &middot; Early games"
+   },
+   {
+    "id": "w9g10",
+    "a": "HOU",
+    "h": "LAC",
+    "k": "2026-11-08T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 8 &middot; Late games"
+   },
+   {
+    "id": "w9g11",
+    "a": "LV",
+    "h": "SF",
+    "k": "2026-11-08T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 8 &middot; Late games"
+   },
+   {
+    "id": "w9g12",
+    "a": "ARI",
+    "h": "SEA",
+    "k": "2026-11-08T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 8 &middot; Late games"
+   },
+   {
+    "id": "w9g13",
+    "a": "GB",
+    "h": "NE",
+    "k": "2026-11-08T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 8 &middot; Late games"
+   },
+   {
+    "id": "w9g14",
+    "a": "TB",
+    "h": "CHI",
+    "k": "2026-11-08T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; November 8"
+   },
+   {
+    "id": "w9g15",
+    "a": "BUF",
+    "h": "MIN",
+    "k": "2026-11-09T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; November 9",
+    "gotw": true
+   }
+  ]
+ },
+ "10": {
+  "n": 10,
+  "word": "Ten",
+  "deadline": "2026-11-15T13:00:00-05:00",
+  "deadlineText": "Sunday, November 15 at 1:00 PM ET",
+  "firstGame": "Thursday, November 12",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w10g1",
+    "a": "WAS",
+    "h": "NYG",
+    "k": "2026-11-12T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; November 12"
+   },
+   {
+    "id": "w10g2",
+    "a": "NE",
+    "h": "DET",
+    "k": "2026-11-15T09:30:00-05:00",
+    "t": "9:30 AM ET",
+    "tv": "FOX",
+    "grp": "Sunday Morning &middot; November 15"
+   },
+   {
+    "id": "w10g3",
+    "a": "BUF",
+    "h": "NYJ",
+    "k": "2026-11-15T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 15 &middot; Early games"
+   },
+   {
+    "id": "w10g4",
+    "a": "CAR",
+    "h": "NO",
+    "k": "2026-11-15T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 15 &middot; Early games"
+   },
+   {
+    "id": "w10g5",
+    "a": "HOU",
+    "h": "CLE",
+    "k": "2026-11-15T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 15 &middot; Early games"
+   },
+   {
+    "id": "w10g6",
+    "a": "JAX",
+    "h": "TEN",
+    "k": "2026-11-15T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 15 &middot; Early games"
+   },
+   {
+    "id": "w10g7",
+    "a": "KC",
+    "h": "ATL",
+    "k": "2026-11-15T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 15 &middot; Early games"
+   },
+   {
+    "id": "w10g8",
+    "a": "MIA",
+    "h": "IND",
+    "k": "2026-11-15T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 15 &middot; Early games"
+   },
+   {
+    "id": "w10g9",
+    "a": "MIN",
+    "h": "GB",
+    "k": "2026-11-15T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 15 &middot; Early games"
+   },
+   {
+    "id": "w10g10",
+    "a": "LAR",
+    "h": "ARI",
+    "k": "2026-11-15T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 15 &middot; Late games"
+   },
+   {
+    "id": "w10g11",
+    "a": "SEA",
+    "h": "LV",
+    "k": "2026-11-15T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 15 &middot; Late games"
+   },
+   {
+    "id": "w10g12",
+    "a": "SF",
+    "h": "DAL",
+    "k": "2026-11-15T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 15 &middot; Late games"
+   },
+   {
+    "id": "w10g13",
+    "a": "PIT",
+    "h": "CIN",
+    "k": "2026-11-15T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; November 15"
+   },
+   {
+    "id": "w10g14",
+    "a": "LAC",
+    "h": "BAL",
+    "k": "2026-11-16T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; November 16",
+    "gotw": true
+   }
+  ]
+ },
+ "11": {
+  "n": 11,
+  "word": "Eleven",
+  "deadline": "2026-11-22T13:00:00-05:00",
+  "deadlineText": "Sunday, November 22 at 1:00 PM ET",
+  "firstGame": "Thursday, November 19",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w11g1",
+    "a": "IND",
+    "h": "HOU",
+    "k": "2026-11-19T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; November 19"
+   },
+   {
+    "id": "w11g2",
+    "a": "ARI",
+    "h": "KC",
+    "k": "2026-11-22T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 22 &middot; Early games"
+   },
+   {
+    "id": "w11g3",
+    "a": "BAL",
+    "h": "CAR",
+    "k": "2026-11-22T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 22 &middot; Early games"
+   },
+   {
+    "id": "w11g4",
+    "a": "JAX",
+    "h": "NYG",
+    "k": "2026-11-22T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 22 &middot; Early games"
+   },
+   {
+    "id": "w11g5",
+    "a": "MIA",
+    "h": "BUF",
+    "k": "2026-11-22T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 22 &middot; Early games"
+   },
+   {
+    "id": "w11g6",
+    "a": "NO",
+    "h": "CHI",
+    "k": "2026-11-22T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 22 &middot; Early games"
+   },
+   {
+    "id": "w11g7",
+    "a": "TB",
+    "h": "DET",
+    "k": "2026-11-22T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 22 &middot; Early games"
+   },
+   {
+    "id": "w11g8",
+    "a": "TEN",
+    "h": "DAL",
+    "k": "2026-11-22T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 22 &middot; Early games"
+   },
+   {
+    "id": "w11g9",
+    "a": "NYJ",
+    "h": "LAC",
+    "k": "2026-11-22T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 22 &middot; Late games"
+   },
+   {
+    "id": "w11g10",
+    "a": "LV",
+    "h": "DEN",
+    "k": "2026-11-22T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 22 &middot; Late games"
+   },
+   {
+    "id": "w11g11",
+    "a": "PIT",
+    "h": "PHI",
+    "k": "2026-11-22T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 22 &middot; Late games"
+   },
+   {
+    "id": "w11g12",
+    "a": "MIN",
+    "h": "SF",
+    "k": "2026-11-22T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; November 22"
+   },
+   {
+    "id": "w11g13",
+    "a": "CIN",
+    "h": "WAS",
+    "k": "2026-11-23T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; November 23",
+    "gotw": true
+   }
+  ]
+ },
+ "12": {
+  "n": 12,
+  "word": "Twelve",
+  "deadline": "2026-11-29T13:00:00-05:00",
+  "deadlineText": "Sunday, November 29 at 1:00 PM ET",
+  "firstGame": "Wednesday, November 25",
+  "firstTime": "8:00 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w12g1",
+    "a": "GB",
+    "h": "LAR",
+    "k": "2026-11-25T20:00:00-05:00",
+    "t": "8:00 PM ET",
+    "tv": "Netflix",
+    "grp": "Wednesday Night &middot; November 25"
+   },
+   {
+    "id": "w12g2",
+    "a": "CHI",
+    "h": "DET",
+    "k": "2026-11-26T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Thursday &middot; November 26"
+   },
+   {
+    "id": "w12g3",
+    "a": "PHI",
+    "h": "DAL",
+    "k": "2026-11-26T16:30:00-05:00",
+    "t": "4:30 PM ET",
+    "tv": "FOX",
+    "grp": "Thursday &middot; November 26"
+   },
+   {
+    "id": "w12g4",
+    "a": "KC",
+    "h": "BUF",
+    "k": "2026-11-26T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Thursday Night &middot; November 26"
+   },
+   {
+    "id": "w12g5",
+    "a": "DEN",
+    "h": "PIT",
+    "k": "2026-11-27T15:00:00-05:00",
+    "t": "3:00 PM ET",
+    "tv": "Prime Video",
+    "grp": "Friday &middot; November 27"
+   },
+   {
+    "id": "w12g6",
+    "a": "ATL",
+    "h": "MIN",
+    "k": "2026-11-29T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 29 &middot; Early games"
+   },
+   {
+    "id": "w12g7",
+    "a": "BAL",
+    "h": "HOU",
+    "k": "2026-11-29T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 29 &middot; Early games"
+   },
+   {
+    "id": "w12g8",
+    "a": "LV",
+    "h": "CLE",
+    "k": "2026-11-29T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 29 &middot; Early games"
+   },
+   {
+    "id": "w12g9",
+    "a": "NO",
+    "h": "CIN",
+    "k": "2026-11-29T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 29 &middot; Early games"
+   },
+   {
+    "id": "w12g10",
+    "a": "NYG",
+    "h": "IND",
+    "k": "2026-11-29T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 29 &middot; Early games"
+   },
+   {
+    "id": "w12g11",
+    "a": "NYJ",
+    "h": "MIA",
+    "k": "2026-11-29T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 29 &middot; Early games"
+   },
+   {
+    "id": "w12g12",
+    "a": "TEN",
+    "h": "JAX",
+    "k": "2026-11-29T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; November 29 &middot; Late games"
+   },
+   {
+    "id": "w12g13",
+    "a": "SEA",
+    "h": "SF",
+    "k": "2026-11-29T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 29 &middot; Late games"
+   },
+   {
+    "id": "w12g14",
+    "a": "WAS",
+    "h": "ARI",
+    "k": "2026-11-29T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; November 29 &middot; Late games"
+   },
+   {
+    "id": "w12g15",
+    "a": "NE",
+    "h": "LAC",
+    "k": "2026-11-29T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; November 29"
+   },
+   {
+    "id": "w12g16",
+    "a": "CAR",
+    "h": "TB",
+    "k": "2026-11-30T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; November 30",
+    "gotw": true
+   }
+  ]
+ },
+ "13": {
+  "n": 13,
+  "word": "Thirteen",
+  "deadline": "2026-12-06T13:00:00-05:00",
+  "deadlineText": "Sunday, December 6 at 1:00 PM ET",
+  "firstGame": "Thursday, December 3",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w13g1",
+    "a": "KC",
+    "h": "LAR",
+    "k": "2026-12-03T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; December 3"
+   },
+   {
+    "id": "w13g2",
+    "a": "CIN",
+    "h": "CLE",
+    "k": "2026-12-06T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 6 &middot; Early games"
+   },
+   {
+    "id": "w13g3",
+    "a": "DET",
+    "h": "ATL",
+    "k": "2026-12-06T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 6 &middot; Early games"
+   },
+   {
+    "id": "w13g4",
+    "a": "GB",
+    "h": "NO",
+    "k": "2026-12-06T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 6 &middot; Early games"
+   },
+   {
+    "id": "w13g5",
+    "a": "JAX",
+    "h": "CHI",
+    "k": "2026-12-06T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 6 &middot; Early games"
+   },
+   {
+    "id": "w13g6",
+    "a": "LAC",
+    "h": "TB",
+    "k": "2026-12-06T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 6 &middot; Early games"
+   },
+   {
+    "id": "w13g7",
+    "a": "SF",
+    "h": "NYG",
+    "k": "2026-12-06T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 6 &middot; Early games"
+   },
+   {
+    "id": "w13g8",
+    "a": "WAS",
+    "h": "TEN",
+    "k": "2026-12-06T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 6 &middot; Early games"
+   },
+   {
+    "id": "w13g9",
+    "a": "MIA",
+    "h": "DEN",
+    "k": "2026-12-06T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 6 &middot; Late games"
+   },
+   {
+    "id": "w13g10",
+    "a": "PHI",
+    "h": "ARI",
+    "k": "2026-12-06T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 6 &middot; Late games"
+   },
+   {
+    "id": "w13g11",
+    "a": "BUF",
+    "h": "NE",
+    "k": "2026-12-06T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 6 &middot; Late games"
+   },
+   {
+    "id": "w13g12",
+    "a": "CAR",
+    "h": "MIN",
+    "k": "2026-12-06T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 6 &middot; Late games"
+   },
+   {
+    "id": "w13g13",
+    "a": "HOU",
+    "h": "PIT",
+    "k": "2026-12-06T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; December 6"
+   },
+   {
+    "id": "w13g14",
+    "a": "DAL",
+    "h": "SEA",
+    "k": "2026-12-07T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; December 7",
+    "gotw": true
+   }
+  ]
+ },
+ "14": {
+  "n": 14,
+  "word": "Fourteen",
+  "deadline": "2026-12-13T13:00:00-05:00",
+  "deadlineText": "Sunday, December 13 at 1:00 PM ET",
+  "firstGame": "Thursday, December 10",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w14g1",
+    "a": "MIN",
+    "h": "NE",
+    "k": "2026-12-10T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; December 10"
+   },
+   {
+    "id": "w14g2",
+    "a": "ATL",
+    "h": "CLE",
+    "k": "2026-12-13T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 13 &middot; Early games"
+   },
+   {
+    "id": "w14g3",
+    "a": "CHI",
+    "h": "MIA",
+    "k": "2026-12-13T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 13 &middot; Early games"
+   },
+   {
+    "id": "w14g4",
+    "a": "DEN",
+    "h": "NYJ",
+    "k": "2026-12-13T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 13 &middot; Early games"
+   },
+   {
+    "id": "w14g5",
+    "a": "HOU",
+    "h": "WAS",
+    "k": "2026-12-13T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 13 &middot; Early games"
+   },
+   {
+    "id": "w14g6",
+    "a": "IND",
+    "h": "PHI",
+    "k": "2026-12-13T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 13 &middot; Early games"
+   },
+   {
+    "id": "w14g7",
+    "a": "NO",
+    "h": "CAR",
+    "k": "2026-12-13T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 13 &middot; Early games"
+   },
+   {
+    "id": "w14g8",
+    "a": "TB",
+    "h": "BAL",
+    "k": "2026-12-13T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 13 &middot; Early games"
+   },
+   {
+    "id": "w14g9",
+    "a": "TEN",
+    "h": "DET",
+    "k": "2026-12-13T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 13 &middot; Early games"
+   },
+   {
+    "id": "w14g10",
+    "a": "LAC",
+    "h": "LV",
+    "k": "2026-12-13T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 13 &middot; Late games"
+   },
+   {
+    "id": "w14g11",
+    "a": "KC",
+    "h": "CIN",
+    "k": "2026-12-13T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 13 &middot; Late games"
+   },
+   {
+    "id": "w14g12",
+    "a": "LAR",
+    "h": "SF",
+    "k": "2026-12-13T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 13 &middot; Late games"
+   },
+   {
+    "id": "w14g13",
+    "a": "NYG",
+    "h": "SEA",
+    "k": "2026-12-13T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 13 &middot; Late games"
+   },
+   {
+    "id": "w14g14",
+    "a": "BUF",
+    "h": "GB",
+    "k": "2026-12-13T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; December 13"
+   },
+   {
+    "id": "w14g15",
+    "a": "PIT",
+    "h": "JAX",
+    "k": "2026-12-14T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; December 14",
+    "gotw": true
+   }
+  ]
+ },
+ "15": {
+  "n": 15,
+  "word": "Fifteen",
+  "deadline": "2026-12-20T13:00:00-05:00",
+  "deadlineText": "Sunday, December 20 at 1:00 PM ET",
+  "firstGame": "Thursday, December 17",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w15g1",
+    "a": "SF",
+    "h": "LAC",
+    "k": "2026-12-17T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; December 17"
+   },
+   {
+    "id": "w15g2",
+    "a": "SEA",
+    "h": "PHI",
+    "k": "2026-12-19T17:00:00-05:00",
+    "t": "5:00 PM ET",
+    "tv": "FOX",
+    "grp": "Saturday Night &middot; December 19"
+   },
+   {
+    "id": "w15g3",
+    "a": "CHI",
+    "h": "BUF",
+    "k": "2026-12-19T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "CBS",
+    "grp": "Saturday Night &middot; December 19"
+   },
+   {
+    "id": "w15g4",
+    "a": "ATL",
+    "h": "WAS",
+    "k": "2026-12-20T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 20 &middot; Early games"
+   },
+   {
+    "id": "w15g5",
+    "a": "BAL",
+    "h": "PIT",
+    "k": "2026-12-20T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 20 &middot; Early games"
+   },
+   {
+    "id": "w15g6",
+    "a": "CIN",
+    "h": "CAR",
+    "k": "2026-12-20T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 20 &middot; Early games"
+   },
+   {
+    "id": "w15g7",
+    "a": "CLE",
+    "h": "NYG",
+    "k": "2026-12-20T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 20 &middot; Early games"
+   },
+   {
+    "id": "w15g8",
+    "a": "IND",
+    "h": "TEN",
+    "k": "2026-12-20T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 20 &middot; Early games"
+   },
+   {
+    "id": "w15g9",
+    "a": "JAX",
+    "h": "HOU",
+    "k": "2026-12-20T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 20 &middot; Early games"
+   },
+   {
+    "id": "w15g10",
+    "a": "MIA",
+    "h": "GB",
+    "k": "2026-12-20T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 20 &middot; Early games"
+   },
+   {
+    "id": "w15g11",
+    "a": "NO",
+    "h": "TB",
+    "k": "2026-12-20T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 20 &middot; Early games"
+   },
+   {
+    "id": "w15g12",
+    "a": "NYJ",
+    "h": "ARI",
+    "k": "2026-12-20T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 20 &middot; Late games"
+   },
+   {
+    "id": "w15g13",
+    "a": "DAL",
+    "h": "LAR",
+    "k": "2026-12-20T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 20 &middot; Late games"
+   },
+   {
+    "id": "w15g14",
+    "a": "DEN",
+    "h": "LV",
+    "k": "2026-12-20T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 20 &middot; Late games"
+   },
+   {
+    "id": "w15g15",
+    "a": "DET",
+    "h": "MIN",
+    "k": "2026-12-20T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; December 20"
+   },
+   {
+    "id": "w15g16",
+    "a": "NE",
+    "h": "KC",
+    "k": "2026-12-21T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; December 21",
+    "gotw": true
+   }
+  ]
+ },
+ "16": {
+  "n": 16,
+  "word": "Sixteen",
+  "deadline": "2026-12-27T13:00:00-05:00",
+  "deadlineText": "Sunday, December 27 at 1:00 PM ET",
+  "firstGame": "Thursday, December 24",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w16g1",
+    "a": "HOU",
+    "h": "PHI",
+    "k": "2026-12-24T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; December 24"
+   },
+   {
+    "id": "w16g2",
+    "a": "GB",
+    "h": "CHI",
+    "k": "2026-12-25T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "Netflix",
+    "grp": "Friday &middot; December 25"
+   },
+   {
+    "id": "w16g3",
+    "a": "BUF",
+    "h": "DEN",
+    "k": "2026-12-25T16:30:00-05:00",
+    "t": "4:30 PM ET",
+    "tv": "Netflix",
+    "grp": "Friday &middot; December 25"
+   },
+   {
+    "id": "w16g4",
+    "a": "LAR",
+    "h": "SEA",
+    "k": "2026-12-25T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "FOX",
+    "grp": "Friday Night &middot; December 25"
+   },
+   {
+    "id": "w16g5",
+    "a": "ARI",
+    "h": "NO",
+    "k": "2026-12-27T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 27 &middot; Early games"
+   },
+   {
+    "id": "w16g6",
+    "a": "CAR",
+    "h": "PIT",
+    "k": "2026-12-27T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; December 27 &middot; Early games"
+   },
+   {
+    "id": "w16g7",
+    "a": "CIN",
+    "h": "IND",
+    "k": "2026-12-27T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; December 27 &middot; Early games"
+   },
+   {
+    "id": "w16g8",
+    "a": "CLE",
+    "h": "BAL",
+    "k": "2026-12-27T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 27 &middot; Early games"
+   },
+   {
+    "id": "w16g9",
+    "a": "LAC",
+    "h": "MIA",
+    "k": "2026-12-27T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 27 &middot; Early games"
+   },
+   {
+    "id": "w16g10",
+    "a": "NE",
+    "h": "NYJ",
+    "k": "2026-12-27T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 27 &middot; Early games"
+   },
+   {
+    "id": "w16g11",
+    "a": "TB",
+    "h": "ATL",
+    "k": "2026-12-27T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; December 27 &middot; Early games"
+   },
+   {
+    "id": "w16g12",
+    "a": "WAS",
+    "h": "MIN",
+    "k": "2026-12-27T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; December 27 &middot; Early games"
+   },
+   {
+    "id": "w16g13",
+    "a": "TEN",
+    "h": "LV",
+    "k": "2026-12-27T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; December 27 &middot; Late games"
+   },
+   {
+    "id": "w16g14",
+    "a": "SF",
+    "h": "KC",
+    "k": "2026-12-27T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; December 27 &middot; Late games"
+   },
+   {
+    "id": "w16g15",
+    "a": "JAX",
+    "h": "DAL",
+    "k": "2026-12-27T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; December 27"
+   },
+   {
+    "id": "w16g16",
+    "a": "NYG",
+    "h": "DET",
+    "k": "2026-12-28T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; December 28",
+    "gotw": true
+   }
+  ]
+ },
+ "17": {
+  "n": 17,
+  "word": "Seventeen",
+  "deadline": "2027-01-03T13:00:00-05:00",
+  "deadlineText": "Sunday, January 3 at 1:00 PM ET",
+  "firstGame": "Thursday, December 31",
+  "firstTime": "8:15 PM ET",
+  "gotwFixed": true,
+  "games": [
+   {
+    "id": "w17g1",
+    "a": "BAL",
+    "h": "CIN",
+    "k": "2026-12-31T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "Prime Video",
+    "grp": "Thursday Night &middot; December 31"
+   },
+   {
+    "id": "w17g2",
+    "a": "BUF",
+    "h": "MIA",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g3",
+    "a": "DEN",
+    "h": "NE",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g4",
+    "a": "IND",
+    "h": "CLE",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g5",
+    "a": "KC",
+    "h": "LAC",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g6",
+    "a": "LAR",
+    "h": "TB",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g7",
+    "a": "MIN",
+    "h": "NYJ",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g8",
+    "a": "NO",
+    "h": "ATL",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g9",
+    "a": "NYG",
+    "h": "DAL",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g10",
+    "a": "PIT",
+    "h": "TEN",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g11",
+    "a": "SEA",
+    "h": "CAR",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g12",
+    "a": "WAS",
+    "h": "JAX",
+    "k": "2027-01-03T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 3 &middot; Early games"
+   },
+   {
+    "id": "w17g13",
+    "a": "LV",
+    "h": "ARI",
+    "k": "2027-01-03T16:05:00-05:00",
+    "t": "4:05 PM ET",
+    "tv": "CBS",
+    "grp": "Sunday &middot; January 3 &middot; Late games"
+   },
+   {
+    "id": "w17g14",
+    "a": "DET",
+    "h": "CHI",
+    "k": "2027-01-03T16:25:00-05:00",
+    "t": "4:25 PM ET",
+    "tv": "FOX",
+    "grp": "Sunday &middot; January 3 &middot; Late games"
+   },
+   {
+    "id": "w17g15",
+    "a": "PHI",
+    "h": "SF",
+    "k": "2027-01-03T20:20:00-05:00",
+    "t": "8:20 PM ET",
+    "tv": "NBC",
+    "grp": "Sunday Night &middot; January 3"
+   },
+   {
+    "id": "w17g16",
+    "a": "HOU",
+    "h": "GB",
+    "k": "2027-01-04T20:15:00-05:00",
+    "t": "8:15 PM ET",
+    "tv": "ESPN",
+    "grp": "Monday Night &middot; January 4",
+    "gotw": true
+   }
+  ]
+ },
+ "18": {
+  "n": 18,
+  "word": "Eighteen",
+  "deadline": "2027-01-10T13:00:00-05:00",
+  "deadlineText": "Sunday, January 10 at 1:00 PM ET",
+  "firstGame": "Sunday, January 10",
+  "firstTime": "1:00 PM ET",
+  "gotwFixed": false,
+  "games": [
+   {
+    "id": "w18g1",
+    "a": "ATL",
+    "h": "CAR",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g2",
+    "a": "CHI",
+    "h": "MIN",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g3",
+    "a": "CLE",
+    "h": "CIN",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g4",
+    "a": "DAL",
+    "h": "WAS",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g5",
+    "a": "DET",
+    "h": "GB",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g6",
+    "a": "JAX",
+    "h": "IND",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g7",
+    "a": "LAC",
+    "h": "DEN",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g8",
+    "a": "LV",
+    "h": "KC",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g9",
+    "a": "MIA",
+    "h": "NE",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g10",
+    "a": "NYJ",
+    "h": "BUF",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g11",
+    "a": "PHI",
+    "h": "NYG",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g12",
+    "a": "PIT",
+    "h": "BAL",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g13",
+    "a": "SEA",
+    "h": "LAR",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g14",
+    "a": "SF",
+    "h": "ARI",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g15",
+    "a": "TB",
+    "h": "NO",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games"
+   },
+   {
+    "id": "w18g16",
+    "a": "TEN",
+    "h": "HOU",
+    "k": "2027-01-10T13:00:00-05:00",
+    "t": "1:00 PM ET",
+    "tv": "TV to be announced",
+    "grp": "Sunday &middot; January 10 &middot; Early games",
+    "gotw": true
+   }
+  ]
+ }
+};
 const TEAMS={ARI:{c:'Arizona',n:'Cardinals',p:'#97233F'},ATL:{c:'Atlanta',n:'Falcons',p:'#A71930'},BAL:{c:'Baltimore',n:'Ravens',p:'#241773'},BUF:{c:'Buffalo',n:'Bills',p:'#00338D'},CAR:{c:'Carolina',n:'Panthers',p:'#0085CA'},CHI:{c:'Chicago',n:'Bears',p:'#0B162A'},CIN:{c:'Cincinnati',n:'Bengals',p:'#FB4F14'},CLE:{c:'Cleveland',n:'Browns',p:'#311D00'},DAL:{c:'Dallas',n:'Cowboys',p:'#041E42'},DEN:{c:'Denver',n:'Broncos',p:'#FB4F14'},DET:{c:'Detroit',n:'Lions',p:'#0076B6'},GB:{c:'Green Bay',n:'Packers',p:'#203731'},HOU:{c:'Houston',n:'Texans',p:'#03202F'},IND:{c:'Indianapolis',n:'Colts',p:'#002C5F'},JAX:{c:'Jacksonville',n:'Jaguars',p:'#006778'},KC:{c:'Kansas City',n:'Chiefs',p:'#E31837'},LV:{c:'Las Vegas',n:'Raiders',p:'#101820'},LAC:{c:'Los Angeles',n:'Chargers',p:'#0080C6'},LAR:{c:'Los Angeles',n:'Rams',p:'#003594'},MIA:{c:'Miami',n:'Dolphins',p:'#008E97'},MIN:{c:'Minnesota',n:'Vikings',p:'#4F2683'},NE:{c:'New England',n:'Patriots',p:'#002244'},NO:{c:'New Orleans',n:'Saints',p:'#101820'},NYG:{c:'New York',n:'Giants',p:'#0B2265'},NYJ:{c:'New York',n:'Jets',p:'#125740'},PHI:{c:'Philadelphia',n:'Eagles',p:'#004C54'},PIT:{c:'Pittsburgh',n:'Steelers',p:'#101820'},SF:{c:'San Francisco',n:'49ers',p:'#AA0000'},SEA:{c:'Seattle',n:'Seahawks',p:'#002244'},TB:{c:'Tampa Bay',n:'Buccaneers',p:'#D50A0A'},TEN:{c:'Tennessee',n:'Titans',p:'#0C2340'},WAS:{c:'Washington',n:'Commanders',p:'#5A1414'}};
 
 /* ---- talking to the pool ---------------------------------------------------
@@ -267,22 +2933,12 @@ async function pushResults(w){
 /* ---- who is in the pool, all season ---- */
 
 /* ---- Week One: the real schedule ---- */
-const W1=[
- {id:'g1',a:'NE',h:'SEA'},{id:'g2',a:'SF',h:'LAR'},{id:'g3',a:'CHI',h:'CAR'},{id:'g4',a:'TB',h:'CIN'},
- {id:'g5',a:'NO',h:'DET'},{id:'g6',a:'ATL',h:'PIT'},{id:'g7',a:'BUF',h:'HOU'},{id:'g8',a:'BAL',h:'IND'},
- {id:'g9',a:'CLE',h:'JAX'},{id:'g10',a:'NYJ',h:'TEN'},{id:'g11',a:'ARI',h:'LAC'},{id:'g12',a:'GB',h:'MIN'},
- {id:'g13',a:'MIA',h:'LV'},{id:'g14',a:'WAS',h:'PHI'},{id:'g15',a:'DAL',h:'NYG'},{id:'g16',a:'DEN',h:'KC',gotw:true}
-];
-/* One entry per week that has a real schedule. To add Week 2: paste its games
-   into a W2 list, add it to GAMES_BY_WEEK, and add its deadline below. The
-   same deadline must go into DEADLINES in server.js. */
-const GAMES_BY_WEEK=[W1];
-const DEADLINES=['2026-09-13T13:00:00-04:00'];
-const DEADLINE_TEXT=['Sunday, September 13 at 1:00 PM ET'];
-const WEEKS=DEADLINES.map((d,i)=>({
-  n:i+1, label:'Week '+(i+1), deadline:new Date(d), deadlineText:DEADLINE_TEXT[i],
-  games:GAMES_BY_WEEK[i], results:{}, actual:null
+const WEEKS = Object.keys(SCHEDULE).map(Number).sort((a,b)=>a-b).map(n => ({
+  n, label:'Week '+n, deadline:new Date(SCHEDULE[n].deadline),
+  deadlineText:SCHEDULE[n].deadlineText, games:SCHEDULE[n].games,
+  results:{}, actual:null
 }));
+
 
 /* A week stays "now" until its last game is done, roughly 36 hours past the
    deadline, which covers the Sunday afternoon games through Monday night. */

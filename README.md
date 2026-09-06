@@ -38,18 +38,22 @@ who has entered.
 | `GET /api/contacts/:n` | names, emails and phones, needs `x-admin-key` |
 | `POST /api/test-reset` | restart the test week's clock and clear its entries |
 
-## Adding a week
+## The schedule
 
-Only weeks with a real schedule get a tab, so Week 2 appears when you add it.
-Four places, all near the top of the relevant file:
+`schedule.json` holds the whole season — all 18 weeks, every kickoff, and which
+game is the Game of the Week. Both pages and the server read that one file, so
+they cannot disagree with each other. Rebuild it with `../make-schedule.py`.
 
-1. `server.js` — add the week's deadline to `DEADLINES`. This is the one that
-   counts; the pages only display it.
-2. `../picks.src.html` — add the games to `GAMES` (each needs `k`, its kickoff)
-   and set `DEADLINE` / `DEADLINE_TEXT`. Bump the storage key to `week2`.
-3. `../grid.src.html` — add a `W2` list of the same games, put it in
-   `GAMES_BY_WEEK`, and add the deadline to `DEADLINES` / `DEADLINE_TEXT`.
-4. Run `python3 ../build-site.py`, commit, push.
+The pick sheet always shows the first week whose deadline has not passed, so it
+moves on by itself.
+
+Two things need a human before the end of the season:
+
+* Weeks 16 to 18 have Sunday kickoff times that the NFL has not fixed yet. They
+  are held at 1:00 PM, which is also the deadline, so nothing locks wrongly —
+  but re-run `make-schedule.py` once the real times are published.
+* Week 18 has no Monday night game, so its Game of the Week is a guess. Pick the
+  real one by hand once the Sunday night game is announced.
 
 ## Trying things out
 
