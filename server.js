@@ -235,7 +235,7 @@ async function api(req, res, url){
   }
 
   if(req.method === 'POST' && parts[1] === 'results'){
-    if(!isAdmin(req)) return json(res, 403, {error: 'not the commissioner'});
+    if(!isAdmin(req)) return json(res, 403, {error: 'wrong password', message: 'That password is not right.'});
     const b = await readBody(req);
     const week = Number(b.week);
     if(!Number.isInteger(week)) return json(res, 400, {error: 'bad week'});
@@ -245,14 +245,14 @@ async function api(req, res, url){
   }
 
   if(req.method === 'GET' && parts[1] === 'contacts'){
-    if(!isAdmin(req)) return json(res, 403, {error: 'not the commissioner'});
+    if(!isAdmin(req)) return json(res, 403, {error: 'wrong password', message: 'That password is not right.'});
     const rows = await store.entries(Number(parts[2]));
     return json(res, 200, {contacts: rows.map(r => ({team: r.team, person: r.person,
                                                      email: r.email, phone: r.phone}))});
   }
 
   if(req.method === 'GET' && parts[1] === 'health'){
-    if(!isAdmin(req)) return json(res, 403, {error: 'not the commissioner'});
+    if(!isAdmin(req)) return json(res, 403, {error: 'wrong password', message: 'That password is not right.'});
     let tables = null;
     if(store.tables){ try { tables = await store.tables(); } catch(e){ tables = 'unavailable'; } }
     return json(res, 200, {storage: store.kind, adminKeySet: !!ADMIN, tables});

@@ -2974,7 +2974,7 @@ async function pushResults(w){
       headers:{'content-type':'application/json', 'x-admin-key': adminKey()},
       body: JSON.stringify({week:w.n, winners:w.results, actual:w.actual})});
     if(r.status === 403){
-      const k = prompt('Commissioner key (set as ADMIN_KEY on the server):');
+      const k = prompt('Password for marking the games:');
       if(k){ try{ localStorage.setItem('suecouser.nflpool.adminkey', k); }catch(e){} return pushResults(w); }
     }
   }catch(e){}
