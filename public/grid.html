@@ -3307,11 +3307,16 @@ function seasonSheet(){
           tab:'FF0F9D8F', heights:{1:26, [head]:32},
           widths:[6,22,24,13].concat(WEEKS.map(()=>7)).concat([13,11])};
 }
+/* The weeks a download would actually hold. Before the first week opens this
+   is empty -- nobody's picks have been shown to the page yet -- and a file
+   built from it would have nothing in it but the headings. */
+function weeksToShow(){ return WEEKS.filter(w => revealed(w) && roster(w).length); }
+
 /* One file for the whole pool: every week that has opened, then the season
    table last -- the far-right tab, the same place it sits on the page.
    A sealed week is left out because the page has not been sent those sheets. */
 function downloadWorkbook(btn){
-  const sheets = WEEKS.filter(w => revealed(w) && roster(w).length).map(weekSheet);
+  const sheets = weeksToShow().map(weekSheet);
   sheets.push(seasonSheet());
   const url = URL.createObjectURL(workbook(sheets));
   const a = document.createElement('a');
@@ -3488,6 +3493,10 @@ function drawClock(w){
 }
 function render(){
   drawTabs();
+  /* No week has opened yet, so there is nothing to put in a spreadsheet. The
+     button appears by itself once the first week's picks close. */
+  const xb = document.getElementById('xlsx');
+  if(xb) xb.hidden = !weeksToShow().length;
   const view = document.getElementById('view');
   if(tab === 'season'){ view.innerHTML = seasonView(); }
   else {
