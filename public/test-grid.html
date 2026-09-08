@@ -46,6 +46,7 @@ input{font:inherit; color:inherit}
 .mast h1{font-size:clamp(38px,7vw,58px); font-weight:800; letter-spacing:-.04em; line-height:.94; margin-top:10px}
 .mast__sub{color:var(--ink-2); margin:10px 0 0; max-width:54ch; font-size:16px}
 .tally{margin-left:auto; display:flex; gap:12px; flex-wrap:wrap}
+.btn--dl{margin-bottom:2px; flex:0 0 auto}
 .stat{background:var(--soft); border-radius:20px; padding:13px 19px; min-width:112px}
 .stat span{display:block; font-weight:700; font-size:11.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3)}
 .stat b{display:block; font-size:25px; font-weight:800; letter-spacing:-.03em; font-variant-numeric:tabular-nums; margin-top:2px}
@@ -200,6 +201,17 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 .pending{background:var(--card); border-radius:26px; box-shadow:var(--shadow); padding:34px; margin-top:24px}
 .pending h2{font-size:24px; font-weight:800; letter-spacing:-.03em}
 .pending p{color:var(--ink-2); margin:8px 0 0; max-width:56ch}
+/* the paper-sheets note */
+.note{max-width:1260px; margin:22px auto 0; padding:0 18px}
+.note__in{background:var(--card); border-radius:20px; box-shadow:var(--shadow);
+  border-left:6px solid var(--accent); padding:16px 22px; display:flex; gap:14px; align-items:flex-start}
+.note__mark{flex:0 0 auto; width:26px; height:26px; border-radius:50%; margin-top:1px;
+  display:grid; place-items:center; background:var(--accent-soft); color:var(--accent-dark);
+  font-weight:800; font-size:15px; font-style:italic}
+.note p{margin:0; color:var(--ink-2); font-size:14.5px; line-height:1.5; max-width:92ch}
+.note p+p{margin-top:5px}
+.note b{color:var(--ink); font-weight:700}
+
 @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
 .testbar{background:#FFF6DC; border-bottom:2px solid #E9A400; color:#8A6200}
 .testbar__in{max-width:1260px; margin:0 auto; padding:12px 18px; display:flex; gap:16px;
@@ -225,9 +237,21 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
       <p class="mast__sub" id="sub"></p>
     </div>
     <div class="tally" id="tally"></div>
+    <button class="btn btn--go btn--dl" id="xlsx" type="button">Download for Excel</button>
   </div>
   <nav class="tabs" id="tabs"></nav>
 </header>
+
+<aside class="note" id="note">
+  <div class="note__in">
+    <span class="note__mark" aria-hidden="true">i</span>
+    <div>
+      <p>Not everyone picks here. Some sheets still come in on paper, and those are
+      <b>not</b> in this table &mdash; what you see below is only the people who used this site.</p>
+      <p>So these are <b>not the final results</b>. Sue sends the final results out by email.</p>
+    </div>
+  </div>
+</aside>
 
 <main class="wrap" id="view"></main>
 
@@ -3077,6 +3101,287 @@ function seasonRows(){
   return rows;
 }
 
+/* --------------------------------------------------------- download for Excel
+   An .xlsx is a zip of a few small XML files. Rather than pull in a library for
+   the one button that needs it, the parts Excel insists on are written out here
+   and stored in the zip uncompressed: no dependency, no build step, and a file
+   that opens straight into Excel or Numbers without an import dialog.
+
+   The workbook is dressed to match the page -- correct picks green, missed ones
+   grey, the winner's row in the same gold -- so a printed sheet reads the way
+   the screen does. */
+const CRC_TABLE = (function(){
+  const t = new Uint32Array(256);
+  for(let i=0;i<256;i++){ let c=i; for(let k=0;k<8;k++) c = (c&1) ? (0xEDB88320 ^ (c>>>1)) : (c>>>1); t[i]=c>>>0; }
+  return t;
+})();
+function crc32(b){
+  let c = 0xFFFFFFFF;
+  for(let i=0;i<b.length;i++) c = CRC_TABLE[(c ^ b[i]) & 0xFF] ^ (c>>>8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function zipStore(files){
+  const enc = new TextEncoder(), body = [], dir = [];
+  let off = 0;
+  files.forEach(f=>{
+    const name = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data);
+    const head = new DataView(new ArrayBuffer(30 + name.length));
+    head.setUint32(0, 0x04034b50, true); head.setUint16(4, 20, true);
+    head.setUint32(14, crc, true);
+    head.setUint32(18, data.length, true); head.setUint32(22, data.length, true);
+    head.setUint16(26, name.length, true);
+    new Uint8Array(head.buffer).set(name, 30);
+    const ent = new DataView(new ArrayBuffer(46 + name.length));
+    ent.setUint32(0, 0x02014b50, true); ent.setUint16(4, 20, true); ent.setUint16(6, 20, true);
+    ent.setUint32(16, crc, true);
+    ent.setUint32(20, data.length, true); ent.setUint32(24, data.length, true);
+    ent.setUint16(28, name.length, true); ent.setUint32(42, off, true);
+    new Uint8Array(ent.buffer).set(name, 46);
+    body.push(new Uint8Array(head.buffer), data);
+    dir.push(new Uint8Array(ent.buffer));
+    off += head.byteLength + data.length;
+  });
+  const dirSize = dir.reduce((n,d)=> n + d.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true);
+  end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, dirSize, true); end.setUint32(16, off, true);
+  return new Blob(body.concat(dir, [new Uint8Array(end.buffer)]),
+    {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+
+function xesc(s){
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))
+                  .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+}
+function colName(i){
+  let s = '';
+  for(i++; i>0; i = Math.floor((i-1)/26)) s = String.fromCharCode(65 + (i-1)%26) + s;
+  return s;
+}
+
+/* ---- the look of the thing ------------------------------------------------
+   The same palette the page uses, so the two never drift apart. Every entry
+   here is an index into the cellXfs list below; S names them. */
+const S = {plain:0, title:1, sub:2, note:3, head:4, rank:5, team:6, who:7,
+           score:8, hit:9, miss:10, pick:11, num:12, total:13,
+           goldC:14, goldL:15, dash:16, foot:17};
+
+const XL_STYLES = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+  + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+  + '<fonts count="11">'
+  +   '<font><sz val="11"/><name val="Calibri"/></font>'                                             /* 0 plain   */
+  +   '<font><b/><sz val="11"/><name val="Calibri"/></font>'                                         /* 1 bold    */
+  +   '<font><b/><sz val="16"/><color rgb="FF0F1E24"/><name val="Calibri"/></font>'                  /* 2 title   */
+  +   '<font><sz val="10"/><color rgb="FF4E626C"/><name val="Calibri"/></font>'                      /* 3 quiet   */
+  +   '<font><i/><sz val="10"/><color rgb="FF4E626C"/><name val="Calibri"/></font>'                  /* 4 note    */
+  +   '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>'                  /* 5 heading */
+  +   '<font><b/><sz val="11"/><color rgb="FF0A6B3C"/><name val="Calibri"/></font>'                  /* 6 hit     */
+  +   '<font><sz val="11"/><color rgb="FF8595A0"/><name val="Calibri"/></font>'                      /* 7 miss    */
+  +   '<font><b/><sz val="11"/><color rgb="FF8A6200"/><name val="Calibri"/></font>'                  /* 8 gold    */
+  +   '<font><b/><sz val="13"/><color rgb="FF0F1E24"/><name val="Calibri"/></font>'                  /* 9 total   */
+  +   '<font><sz val="11"/><color rgb="FF4E626C"/><name val="Calibri"/></font>'                      /* 10 name   */
+  + '</fonts>'
+  + '<fills count="7">'
+  +   '<fill><patternFill patternType="none"/></fill>'
+  +   '<fill><patternFill patternType="gray125"/></fill>'
+  +   '<fill><patternFill patternType="solid"><fgColor rgb="FF0F9D8F"/><bgColor indexed="64"/></patternFill></fill>'  /* 2 teal */
+  +   '<fill><patternFill patternType="solid"><fgColor rgb="FFDCF5E7"/><bgColor indexed="64"/></patternFill></fill>'  /* 3 hit  */
+  +   '<fill><patternFill patternType="solid"><fgColor rgb="FFEDF0F3"/><bgColor indexed="64"/></patternFill></fill>'  /* 4 miss */
+  +   '<fill><patternFill patternType="solid"><fgColor rgb="FFFFF6DC"/><bgColor indexed="64"/></patternFill></fill>'  /* 5 gold */
+  +   '<fill><patternFill patternType="solid"><fgColor rgb="FFF3F7FA"/><bgColor indexed="64"/></patternFill></fill>'  /* 6 soft */
+  + '</fills>'
+  + '<borders count="3">'
+  +   '<border><left/><right/><top/><bottom/><diagonal/></border>'
+  +   '<border><left/><right/><top/><bottom style="thin"><color rgb="FFE1EAF0"/></bottom><diagonal/></border>'
+  +   '<border><left/><right/><top/><bottom style="medium"><color rgb="FF0B6B5D"/></bottom><diagonal/></border>'
+  + '</borders>'
+  + '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+  + '<cellXfs count="18">'
+  +   xf(0,0,0)                                    /* 0  plain */
+  +   xf(2,0,0)                                    /* 1  title */
+  +   xf(3,0,0)                                    /* 2  sub   */
+  +   xf(4,0,0)                                    /* 3  note  */
+  +   xf(5,2,2,'center','center',true)             /* 4  head  */
+  +   xf(10,0,1,'center')                          /* 5  rank  */
+  +   xf(1,0,1,'left')                             /* 6  team  */
+  +   xf(3,0,1,'left')                             /* 7  who   */
+  +   xf(1,6,1,'center')                           /* 8  score */
+  +   xf(6,3,1,'center')                           /* 9  hit   */
+  +   xf(7,4,1,'center')                           /* 10 miss  */
+  +   xf(0,0,1,'center')                           /* 11 pick  */
+  +   xf(0,0,1,'center')                           /* 12 num   */
+  +   xf(9,6,1,'center')                           /* 13 total */
+  +   xf(8,5,1,'center')                           /* 14 goldC */
+  +   xf(8,5,1,'left')                             /* 15 goldL */
+  +   xf(7,0,1,'center')                           /* 16 dash  */
+  +   xf(8,0,0,'left')                             /* 17 foot  */
+  + '</cellXfs>'
+  + '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+
+function xf(font, fill, border, hori, vert, wrap){
+  let s = '<xf numFmtId="0" fontId="'+font+'" fillId="'+fill+'" borderId="'+border+'" xfId="0"'
+        + ' applyFont="1" applyFill="1" applyBorder="1"';
+  if(hori || vert || wrap){
+    s += ' applyAlignment="1"><alignment'
+      + (hori ? ' horizontal="'+hori+'"' : '')
+      + (vert ? ' vertical="'+vert+'"' : '')
+      + (wrap ? ' wrapText="1"' : '') + '/></xf>';
+  } else s += '/>';
+  return s;
+}
+
+/* A cell is a plain value, or {v, s} to give it one of the styles above. */
+function cellXml(ref, c){
+  const obj = c !== null && typeof c === 'object';
+  const v = obj ? c.v : c, s = (obj && c.s) ? ' s="'+c.s+'"' : '';
+  if(v === '' || v == null) return s ? '<c r="'+ref+'"'+s+'/>' : '';
+  if(typeof v === 'number' && isFinite(v)) return '<c r="'+ref+'"'+s+'><v>'+v+'</v></c>';
+  return '<c r="'+ref+'"'+s+' t="inlineStr"><is><t xml:space="preserve">'+xesc(v)+'</t></is></c>';
+}
+function sheetXml(sh){
+  const last = colName((sh.widths ? sh.widths.length : 1) - 1);
+  let s = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+  if(sh.tab) s += '<sheetPr><tabColor rgb="'+sh.tab+'"/></sheetPr>';
+  /* gridlines off: only the borders set above draw, which is what makes it
+     look like a laid-out sheet rather than a dump into a grid. */
+  s += '<sheetViews><sheetView showGridLines="0" workbookViewId="0">'
+    + (sh.freeze ? '<pane xSplit="'+(sh.cols||3)+'" ySplit="'+sh.freeze+'" topLeftCell="'
+                   + colName(sh.cols||3)+(sh.freeze+1)
+                   + '" activePane="bottomRight" state="frozen"/>' : '')  /* headings, names and the total stay put */
+    + '</sheetView></sheetViews><sheetFormatPr defaultRowHeight="16"/>';
+  if(sh.widths && sh.widths.length) s += '<cols>' + sh.widths.map((w,i)=>
+    '<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>').join('') + '</cols>';
+  const heights = sh.heights || {};
+  s += '<sheetData>' + sh.rows.map((r,ri)=>{
+      const cells = r.map((c,ci)=> cellXml(colName(ci)+(ri+1), c)).join('');
+      const h = heights[ri+1];
+      if(!cells && !h) return '';
+      return '<row r="'+(ri+1)+'"'+(h ? ' ht="'+h+'" customHeight="1"' : '')+'>'+cells+'</row>';
+    }).join('') + '</sheetData>';
+  /* the title and the note run the width of the table instead of being sliced
+     up by the column lines */
+  if(sh.merges && sh.merges.length) s += '<mergeCells count="'+sh.merges.length+'">'
+    + sh.merges.map(r=>'<mergeCell ref="A'+r+':'+last+r+'"/>').join('') + '</mergeCells>';
+  s += '<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.5" header="0.3" footer="0.3"/>'
+    + '<pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>';
+  return s;
+}
+
+function tabName(s){ return String(s).replace(/[\[\]:*?\/\\]/g, ' ').slice(0, 31); }
+function workbook(sheets){
+  const R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const files = [
+    {name:'[Content_Types].xml', text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+      + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+      + '<Default Extension="xml" ContentType="application/xml"/>'
+      + '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+      + sheets.map((s,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)
+          + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('')
+      + '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
+      + '</Types>'},
+    {name:'_rels/.rels', text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + '<Relationship Id="rId1" Type="'+R+'/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+    {name:'xl/workbook.xml', text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="'+R+'"><sheets>'
+      + sheets.map((s,i)=>'<sheet name="'+xesc(tabName(s.name))+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')
+      + '</sheets></workbook>'},
+    {name:'xl/_rels/workbook.xml.rels', text:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      + sheets.map((s,i)=>'<Relationship Id="rId'+(i+1)+'" Type="'+R+'/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join('')
+      + '<Relationship Id="rId'+(sheets.length+1)+'" Type="'+R+'/styles" Target="styles.xml"/></Relationships>'},
+    {name:'xl/styles.xml', text:XL_STYLES}
+  ];
+  sheets.forEach((s,i)=> files.push({name:'xl/worksheets/sheet'+(i+1)+'.xml', text:sheetXml(s)}));
+  return zipStore(files);
+}
+
+/* The note on the page is the one wording; the spreadsheet carries the same
+   sentences so a downloaded file cannot be read without them. */
+function noteLines(){
+  return Array.from(document.querySelectorAll('#note p'))
+              .map(p => p.textContent.replace(/\s+/g, ' ').trim());
+}
+/* Rows 1-6 of every sheet: title, where it stands, then the note. */
+function topRows(title, standing){
+  const out = [[{v:title, s:S.title}], [{v:standing, s:S.sub}], []];
+  noteLines().forEach(t => out.push([{v:t, s:S.note}]));
+  out.push([]);
+  return out;
+}
+const TOP_MERGES = [1,2,4,5];       /* title, standing, and the two note lines */
+
+function weekSheet(w){
+  const rows = weekRows(w), c = called(w), a = actualOf(w), win = weekWinner(w), res = resultsOf(w);
+  const out = topRows('Sue Couser’s NFL Pool — ' + w.label,
+    'Picks closed ' + w.deadlineText + ' · ' + c + ' of ' + w.games.length + ' games marked'
+    + (a == null ? '' : ' · Game of the Week total ' + a));
+  const head = out.length + 1;      /* the headings land on the row after the note */
+  /* Correct sits at both ends: the left one rides along in the frozen pane,
+     the right one is where the eye lands after reading across the games. */
+  out.push(['Rank','Team','Name','Correct'].concat(w.games.map(g => g.a + ' at ' + g.h))
+           .concat(['Correct','Score guess','Off by']).map(v => ({v, s:S.head})));
+  rows.forEach((r,i)=>{
+    const gold = !!(win && win.e.team === r.e.team);
+    out.push([{v:i+1, s:gold ? S.goldC : S.rank},
+              {v:r.e.team, s:gold ? S.goldL : S.team},
+              {v:r.e.who,  s:gold ? S.goldL : S.who},
+              {v:c ? r.s : '', s:gold ? S.goldC : S.score}]
+      .concat(w.games.map(g=>{
+        /* green where the pick came in, grey where it did not, plain until
+           the game has been called */
+        const ab = r.e.picks[g.id] || '';
+        return {v:ab, s: !res[g.id] ? S.pick : (res[g.id] === ab ? S.hit : S.miss)};
+      }))
+      .concat([{v:c ? r.s : '', s:gold ? S.goldC : S.score},
+               {v:r.e.tie, s:gold ? S.goldC : S.num},
+               {v:r.o == null ? '' : r.o, s:gold ? S.goldC : S.num}]));
+  });
+  out.push([]);
+  out.push([{v: win ? 'Won by ' + win.e.team + ' — ' + win.e.who
+                    : 'No winner yet: the week is not finished.', s:S.foot}]);
+  return {name:w.label, rows:out, freeze:head, cols:4, merges:TOP_MERGES,
+          heights:{1:26, [head]:32},
+          widths:[6,22,24,9].concat(w.games.map(()=>11)).concat([9,13,9])};
+}
+function seasonSheet(){
+  const rows = seasonRows(), played = WEEKS.filter(w => revealed(w) && called(w)).length;
+  const out = topRows('Sue Couser’s NFL Pool — Season standings',
+    played + ' of ' + WEEKS.length + ' weeks played · downloaded ' + new Date().toLocaleString());
+  const head = out.length + 1;
+  out.push(['Rank','Team','Name','Season total'].concat(WEEKS.map(w => w.label.replace('Week ','Wk ')))
+           .concat(['Season total','Weeks won']).map(v => ({v, s:S.head})));
+  rows.forEach((r,i)=>{
+    /* a week someone won is picked out in the same gold the page uses */
+    const tookIt = WEEKS.map(w => { const x = weekWinner(w); return !!(x && x.e.team === r.e.team); });
+    out.push([{v:i+1, s:S.rank}, {v:r.e.team, s:S.team}, {v:r.e.who, s:S.who},
+              {v:r.total, s:S.total}]
+      .concat(r.per.map((v,wi)=> v == null ? {v:'—', s:S.dash}
+                                           : {v, s: tookIt[wi] ? S.goldC : S.num}))
+      .concat([{v:r.total, s:S.total}, {v:r.won || '—', s:r.won ? S.num : S.dash}]));
+  });
+  return {name:'Season standings', rows:out, freeze:head, cols:4, merges:TOP_MERGES,
+          tab:'FF0F9D8F', heights:{1:26, [head]:32},
+          widths:[6,22,24,13].concat(WEEKS.map(()=>7)).concat([13,11])};
+}
+/* One file for the whole pool: every week that has opened, then the season
+   table last -- the far-right tab, the same place it sits on the page.
+   A sealed week is left out because the page has not been sent those sheets. */
+function downloadWorkbook(btn){
+  const sheets = WEEKS.filter(w => revealed(w) && roster(w).length).map(weekSheet);
+  sheets.push(seasonSheet());
+  const url = URL.createObjectURL(workbook(sheets));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'NFL-Pool-2026-' + new Date().toISOString().slice(0,10) + '.xlsx';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=> URL.revokeObjectURL(url), 4000);
+  if(btn){ btn.textContent = 'Downloaded'; setTimeout(()=>{ btn.textContent = 'Download for Excel'; }, 1800); }
+}
+
 /* ------------------------------------------------------------------ views */
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
@@ -3279,6 +3584,12 @@ function wire(){
     setTimeout(()=>{ cp.textContent='Copy grid'; }, 1600);
   });
 }
+/* The download button sits in the masthead rather than inside a view, so it is
+   there on every tab -- including a sealed week, where the season table and the
+   weeks already played are still worth having. It outlives a render, so it is
+   wired once here instead of in wire(). */
+const xlBtn = document.getElementById('xlsx');
+if(xlBtn) xlBtn.addEventListener('click', ()=> downloadWorkbook(xlBtn));
 document.getElementById('tabs').addEventListener('click', e=>{
   const t = e.target.closest('.tab'); if(!t) return;
   tab = t.dataset.tab === 'season' ? 'season' : Number(t.dataset.tab);
