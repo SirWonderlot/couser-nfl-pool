@@ -200,6 +200,9 @@ tbody td.c-total,thead th.c-total{background:var(--soft)}
 .key--hit{background:var(--hit-bg); box-shadow:inset 0 0 0 2px var(--hit)}
 .key--miss{background:var(--miss-bg)}
 .key--win{background:var(--win-bg); box-shadow:inset 0 0 0 2px var(--win)}
+.savenote{margin-top:12px; padding:13px 18px; border-radius:16px; font-size:14.5px; font-weight:600;
+  background:#FDECEC; color:#8A1F1F; border:2px solid #F3C6C6}
+.savenote.ok{background:var(--hit-bg); color:var(--hit-ink); border-color:var(--hit)}
 .pending{background:var(--card); border-radius:26px; box-shadow:var(--shadow); padding:34px; margin-top:24px}
 .pending h2{font-size:24px; font-weight:800; letter-spacing:-.03em}
 .pending p{color:var(--ink-2); margin:8px 0 0; max-width:56ch}
@@ -2944,16 +2947,33 @@ async function pullWeek(n){
     poolState = 'live';
   }catch(e){ poolState = 'offline'; }
 }
-async function pushResults(w){
+/* What happened to the last attempt to save, shown under the controls. Marking
+   a game used to fail in silence, so a wrong password looked like a dead page. */
+let saveState = null;
+function saved(ok, text){ saveState = {ok, text}; render(); }
+
+async function pushResults(w, retried){
   try{
     const r = await fetch(API + '/results', {method:'POST',
       headers:{'content-type':'application/json', 'x-admin-key': adminKey()},
       body: JSON.stringify({week:w.n, winners:w.results, actual:w.actual})});
     if(r.status === 403){
+      /* Ask once. Asking again on the way back from a refused key is what used
+         to put the page into an endless run of password boxes. */
+      if(retried){
+        try{ localStorage.removeItem('suecouser.nflpool.adminkey'); }catch(e){}
+        return saved(false, 'That password was not right, so nothing has been saved. '
+          + 'What you see here is only on this device. Tap a team again to try another password.');
+      }
       const k = prompt('Password for marking the games:');
-      if(k){ try{ localStorage.setItem('suecouser.nflpool.adminkey', k); }catch(e){} return pushResults(w); }
+      if(k){ try{ localStorage.setItem('suecouser.nflpool.adminkey', k); }catch(e){} return pushResults(w, true); }
+      return saved(false, 'Nothing saved \u2014 marking the games needs the password.');
     }
-  }catch(e){}
+    if(!r.ok) return saved(false, 'The pool did not accept that (error ' + r.status + '), so nothing has been saved.');
+    return saved(true, 'Saved for everyone.');
+  }catch(e){
+    saved(false, 'Could not reach the pool, so nothing has been saved. Check the connection and tap again.');
+  }
 }
 
 /* ---- who is in the pool, all season ---- */
@@ -3409,6 +3429,7 @@ function weekView(w){
     + '<div class="spacer"></div>'
     + '<button class="btn" id="clear">Clear results</button>'
     + '<button class="btn btn--go" id="copy">Copy grid</button></div>';
+  if(saveState) html += '<div class="savenote'+(saveState.ok?' ok':'')+'">'+esc(saveState.text)+'</div>';
 
   if(c === w.games.length){
     const level = rows.filter(r => r.s === rows[0].s);

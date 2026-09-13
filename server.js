@@ -239,8 +239,11 @@ async function api(req, res, url){
     const b = await readBody(req);
     const week = Number(b.week);
     if(!Number.isInteger(week)) return json(res, 400, {error: 'bad week'});
-    await store.setResults(week, (b.winners && typeof b.winners === 'object') ? b.winners : {},
-                           Number.isFinite(Number(b.actual)) ? Number(b.actual) : null);
+    /* Number(null) is 0, so an unset total used to be stored as a real zero --
+       which then counted as everyone's tiebreak being that far out. */
+    const actual = (b.actual === null || b.actual === undefined || b.actual === '' ||
+                    !Number.isFinite(Number(b.actual))) ? null : Number(b.actual);
+    await store.setResults(week, (b.winners && typeof b.winners === 'object') ? b.winners : {}, actual);
     return json(res, 200, {ok: true});
   }
 
