@@ -10,6 +10,8 @@
  *                 is fine locally but does NOT survive a restart on Render.
  *   ADMIN_KEY     Needed to mark results and to read anyone's contact details.
  *   PORT          Set by Render.
+ *   SCORES        'off' to stop the scoreboard being read at all, so the week
+ *                 is marked only by hand. Anything else leaves it on.
  */
 'use strict';
 const http = require('node:http');
@@ -164,6 +166,129 @@ async function deadlineOf(week){
 }
 const isOpen = d => !d || Date.now() < d.getTime();
 
+/* --------------------------------------------------- calling the games
+   ESPN publish a public scoreboard. We read it, and for any game that has
+   actually finished we set the winner -- but never over the top of one Sue has
+   marked herself. Her tap is deliberate; a scoreboard we do not control is
+   not, so hers wins and stays won.
+
+   Which games she has touched is kept in the config table under manual:<week>,
+   which means no change to the results table and the same behaviour whether
+   the pool is on Postgres or the local JSON file. */
+const SCORES_ON = (process.env.SCORES || '').toLowerCase() !== 'off';
+const ESPN = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=';
+
+/* ESPN spell four of the teams differently from the schedule. */
+const ESPN_FIX = {WSH:'WAS', JAC:'JAX', LVR:'LV', LA:'LAR'};
+const fixAb = s => { const a = String(s||'').toUpperCase(); return ESPN_FIX[a] || a; };
+
+/* the calendar days a week's games fall on, in US Eastern, as YYYYMMDD */
+function daysOf(week){
+  const w = SCHEDULE[week]; if(!w) return [];
+  const out = new Set();
+  for(const g of w.games){
+    const d = new Date(g.k);
+    out.add(new Intl.DateTimeFormat('en-CA', {timeZone:'America/New_York',
+      year:'numeric', month:'2-digit', day:'2-digit'}).format(d).replace(/-/g, ''));
+  }
+  return [...out].sort();
+}
+
+async function espnDay(day){
+  const r = await fetch(ESPN + day, {headers:{'accept':'application/json'}});
+  if(!r.ok) throw new Error('scoreboard ' + day + ' returned ' + r.status);
+  return r.json();
+}
+
+/* every finished game on those days, as away/home/scores */
+async function finalsFor(week){
+  const out = [];
+  for(const day of daysOf(week)){
+    let data;
+    try { data = await espnDay(day); }
+    catch(e){ console.log('scores: ' + e.message); continue; }
+    for(const ev of (data.events || [])){
+      const c = (ev.competitions || [])[0]; if(!c) continue;
+      const st = (c.status || {}).type || {};
+      if(!st.completed) continue;                       /* still being played */
+      const side = {};
+      for(const t of (c.competitors || [])) side[t.homeAway] = t;
+      if(!side.home || !side.away) continue;
+      out.push({
+        home: fixAb(side.home.team && side.home.team.abbreviation),
+        away: fixAb(side.away.team && side.away.team.abbreviation),
+        homeScore: Number(side.home.score), awayScore: Number(side.away.score),
+        winner: side.home.winner ? fixAb(side.home.team.abbreviation)
+              : side.away.winner ? fixAb(side.away.team.abbreviation)
+              : null                                    /* a tie has no winner */
+      });
+    }
+  }
+  return out;
+}
+
+const lastLook = {};        /* week -> when the scoreboard was last read */
+const LOOK_EVERY = 60*1000;
+
+async function readScores(week, force){
+  if(!SCORES_ON || !SCHEDULE[week]) return false;
+  if(!force && lastLook[week] && Date.now() - lastLook[week] < LOOK_EVERY) return false;
+  lastLook[week] = Date.now();
+
+  const finals = await finalsFor(week);
+  if(!finals.length) return false;
+
+  const cur = await store.results(week);
+  const winners = Object.assign({}, cur.winners || {});
+  let actual = cur.actual, changed = false;
+
+  let manual = {};
+  try { manual = JSON.parse(await store.config('manual:' + week) || '{}'); } catch(e){}
+
+  /* Games she settled herself that the final score disagrees with. Her mark
+     stands -- but saying nothing would let a wrong result ride, so the page is
+     told and she can decide. */
+  const argue = [];
+  for(const g of SCHEDULE[week].games){
+    const f = finals.find(x => x.home === g.h && x.away === g.a);
+    if(!f) continue;
+    if(manual[g.id] && f.winner && winners[g.id] && winners[g.id] !== f.winner){
+      argue.push({game:g.id, yours:winners[g.id], scoreboard:f.winner,
+                  score: g.a + ' ' + f.awayScore + ' at ' + g.h + ' ' + f.homeScore});
+    }
+    if(!manual[g.id] && f.winner && winners[g.id] !== f.winner){
+      winners[g.id] = f.winner; changed = true;
+    }
+    /* the tiebreak is both scores added, so the Game of the Week gives it */
+    if(g.gotw && !manual.__actual && Number.isFinite(f.homeScore + f.awayScore)){
+      const total = f.homeScore + f.awayScore;
+      if(actual !== total){ actual = total; changed = true; }
+    }
+  }
+  await store.setConfig('argue:' + week, JSON.stringify(argue));
+  if(argue.length) console.log('scores: week ' + week + ' -- ' + argue.length
+    + ' game(s) marked by hand disagree with the final score: '
+    + argue.map(a => a.game + ' (' + a.yours + ' vs ' + a.scoreboard + ')').join(', '));
+  if(changed){
+    await store.setResults(week, winners, actual);
+    console.log('scores: week ' + week + ' now has ' + Object.keys(winners).length
+                + ' of ' + SCHEDULE[week].games.length + ' games called'
+                + (actual == null ? '' : ', Game of the Week total ' + actual));
+  }
+  return changed;
+}
+
+/* the week whose games are being played now, give or take */
+function liveWeek(){
+  const now = Date.now();
+  const weeks = Object.values(SCHEDULE).map(w => w.n).sort((a,b)=>a-b);
+  for(const n of weeks){
+    const end = new Date(DEADLINES[n]).getTime() + 40*3600*1000;   /* through Monday night */
+    if(now < end) return n;
+  }
+  return weeks[weeks.length - 1];
+}
+
 /* ------------------------------------------------------------ helpers */
 function json(res, code, body){
   const s = JSON.stringify(body);
@@ -193,6 +318,8 @@ async function api(req, res, url){
     if(!Number.isInteger(week)) return json(res, 400, {error: 'bad week'});
     const deadline = await deadlineOf(week);
     const open = isOpen(deadline);
+    /* a closed week may have finished games the scoreboard can call for us */
+    if(!open){ try { await readScores(week); } catch(e){ console.log('scores:', e.message); } }
     const token = clean(url.searchParams.get('token'), 80);
     const rows = await store.entries(week);
     const results = await store.results(week);
@@ -201,6 +328,10 @@ async function api(req, res, url){
       deadline: deadline ? deadline.toISOString() : null,
       open,                                    // are picks still changeable
       revealed: !open,                         // can everyone see everyone
+      disputed: await (async () => {
+        try { return JSON.parse(await store.config('argue:' + week) || '[]'); }
+        catch(e){ return []; }
+      })(),
       roster: rows.map(r => ({team: r.team, person: r.person, sentAt: r.sent_at})),
       entries: rows
         .filter(r => !open || r.token === token)
@@ -244,6 +375,16 @@ async function api(req, res, url){
     const actual = (b.actual === null || b.actual === undefined || b.actual === '' ||
                     !Number.isFinite(Number(b.actual))) ? null : Number(b.actual);
     await store.setResults(week, (b.winners && typeof b.winners === 'object') ? b.winners : {}, actual);
+
+    /* Remember what she settled by hand, so the scoreboard leaves it alone.
+       Clearing the week forgets all of it and hands the week back to the
+       scoreboard. */
+    let manual = {};
+    try { manual = JSON.parse(await store.config('manual:' + week) || '{}'); } catch(e){}
+    if(b.manualClear) manual = {};
+    if(b.manualGame)  manual[clean(b.manualGame, 20)] = true;
+    if(b.manualActual) manual.__actual = true;
+    await store.setConfig('manual:' + week, JSON.stringify(manual));
     return json(res, 200, {ok: true});
   }
 
@@ -305,5 +446,15 @@ store.init()
     if(store.kind === 'json file')
       console.log('WARNING: no DATABASE_URL, so entries are kept in a file that Render wipes on restart.');
     if(!ADMIN) console.log('WARNING: ADMIN_KEY is not set, so results cannot be marked.');
+    if(!SCORES_ON) console.log('Scoreboard reading is off; the week is marked only by hand.');
+    else {
+      /* This machine stays awake, so the games can be called as they finish
+         rather than waiting for somebody to open the page. Every five minutes
+         is far more often than games actually end. */
+      const look = () => readScores(liveWeek()).catch(e => console.log('scores:', e.message));
+      setTimeout(look, 10*1000);
+      setInterval(look, 5*60*1000);
+      console.log('Watching the scoreboard for week ' + liveWeek() + ', every 5 minutes.');
+    }
   }))
   .catch(e => { console.error('could not start:', e.message); process.exit(1); });

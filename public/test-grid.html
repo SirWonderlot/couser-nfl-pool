@@ -3004,9 +3004,11 @@ function saved(ok, text){ saveState = {ok, text}; render(); }
 
 async function pushResults(w, retried){
   try{
+    /* say which game she settled herself, so the scoreboard leaves it alone */
+    const body = Object.assign({week:w.n, winners:w.results, actual:w.actual}, w.mark || {});
     const r = await fetch(API + '/results', {method:'POST',
       headers:{'content-type':'application/json', 'x-admin-key': adminKey()},
-      body: JSON.stringify({week:w.n, winners:w.results, actual:w.actual})});
+      body: JSON.stringify(body)});
     if(r.status === 403){
       /* Ask once. Asking again on the way back from a refused key is what used
          to put the page into an endless run of password boxes. */
@@ -3500,6 +3502,12 @@ function weekView(w){
     + '<button class="btn" id="clear">Clear results</button>'
     + '<button class="btn btn--go" id="copy">Copy grid</button></div>';
   if(saveState) html += '<div class="savenote'+(saveState.ok?' ok':'')+'">'+esc(saveState.text)+'</div>';
+  const argue = (POOL[w.n] && POOL[w.n].disputed) || [];
+  if(argue.length) html += '<div class="savenote">'
+    + argue.map(a => 'You marked <b>' + esc(a.yours) + '</b> but the final score was '
+        + esc(a.score) + ', so the scoreboard makes it <b>' + esc(a.scoreboard) + '</b>.').join(' ')
+    + ' Your mark stands until you change it \u2014 tap the right team to correct it.'
+    + '</div>';
 
   if(c === w.games.length){
     const level = rows.filter(r => r.s === rows[0].s);
@@ -3616,16 +3624,18 @@ function wire(){
     if(!Object.keys(w.results).length) w.results = Object.assign({}, resultsOf(w));
     if(w.results[b.dataset.game] === b.dataset.team) delete w.results[b.dataset.game];
     else w.results[b.dataset.game] = b.dataset.team;
-    w.touched = true;
+    w.touched = true; w.mark = {manualGame: b.dataset.game};
     pushResults(w); render();
   });
   const act = document.getElementById('actual');
   if(act) act.addEventListener('input', e=>{
     w.actual = e.target.value==='' ? null : Number(e.target.value);
-    w.touched = true; pushResults(w); render(); });
+    w.touched = true; w.mark = {manualActual: true}; pushResults(w); render(); });
   const clr = document.getElementById('clear');
   if(clr) clr.addEventListener('click', ()=>{
-    w.results = {}; w.actual = null; w.touched = true; pushResults(w); render(); });
+    /* clearing hands the week back to the scoreboard as well */
+    w.results = {}; w.actual = null; w.touched = true; w.mark = {manualClear: true};
+    pushResults(w); render(); });
   const cp = document.getElementById('copy');
   if(cp) cp.addEventListener('click', async ()=>{
     const rows = weekRows(w);
