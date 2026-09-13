@@ -2970,6 +2970,10 @@ async function pushResults(w, retried){
       return saved(false, 'Nothing saved \u2014 marking the games needs the password.');
     }
     if(!r.ok) return saved(false, 'The pool did not accept that (error ' + r.status + '), so nothing has been saved.');
+    /* it is the server's word now, so hand the local copy over and step back */
+    const p = POOL[w.n];
+    if(p) p.results = {winners: Object.assign({}, w.results), actual: w.actual};
+    w.touched = false;
     return saved(true, 'Saved for everyone.');
   }catch(e){
     saved(false, 'Could not reach the pool, so nothing has been saved. Check the connection and tap again.');
@@ -3013,12 +3017,18 @@ let tab = currentWeekN();     /* 'season' or a week number */
 
 const revealed = w => serverRevealed(w) !== null ? serverRevealed(w)
                                                 : Date.now() >= w.deadline.getTime();
+/* The server's last word is what everyone sees -- except on the commissioner's
+   own screen between a tap and the save landing. Without that exception the
+   server copy won out, so tapping a team or pressing Clear changed nothing on
+   screen until the next poll a minute later, and the page looked broken. */
 function resultsOf(w){
+  if(w.touched) return w.results;
   const p = POOL[w.n];
   if(p && p.results && p.results.winners && Object.keys(p.results.winners).length) return p.results.winners;
   return w.results;
 }
 function actualOf(w){
+  if(w.touched) return w.actual;
   if(w.actual != null) return w.actual;
   const p = POOL[w.n];
   return (p && p.results && p.results.actual != null) ? p.results.actual : null;
@@ -3546,12 +3556,16 @@ function wire(){
     if(!Object.keys(w.results).length) w.results = Object.assign({}, resultsOf(w));
     if(w.results[b.dataset.game] === b.dataset.team) delete w.results[b.dataset.game];
     else w.results[b.dataset.game] = b.dataset.team;
+    w.touched = true;
     pushResults(w); render();
   });
   const act = document.getElementById('actual');
-  if(act) act.addEventListener('input', e=>{ w.actual = e.target.value==='' ? null : Number(e.target.value); pushResults(w); render(); });
+  if(act) act.addEventListener('input', e=>{
+    w.actual = e.target.value==='' ? null : Number(e.target.value);
+    w.touched = true; pushResults(w); render(); });
   const clr = document.getElementById('clear');
-  if(clr) clr.addEventListener('click', ()=>{ w.results = {}; w.actual = null; pushResults(w); render(); });
+  if(clr) clr.addEventListener('click', ()=>{
+    w.results = {}; w.actual = null; w.touched = true; pushResults(w); render(); });
   const cp = document.getElementById('copy');
   if(cp) cp.addEventListener('click', async ()=>{
     const rows = weekRows(w);
