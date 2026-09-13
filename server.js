@@ -265,6 +265,13 @@ async function readScores(week, force){
       if(actual !== total){ actual = total; changed = true; }
     }
   }
+  /* If the Game of the Week has not finished, nobody can be a distance from a
+     total that does not exist yet. A leftover value here counts as everyone
+     being that far out and would settle a level week on nothing. */
+  const gotw = SCHEDULE[week].games.find(g => g.gotw);
+  const gotwDone = gotw && finals.some(x => x.home === gotw.h && x.away === gotw.a);
+  if(!gotwDone && !manual.__actual && actual != null){ actual = null; changed = true; }
+
   await store.setConfig('argue:' + week, JSON.stringify(argue));
   if(argue.length) console.log('scores: week ' + week + ' -- ' + argue.length
     + ' game(s) marked by hand disagree with the final score: '
