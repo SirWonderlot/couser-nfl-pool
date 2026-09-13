@@ -159,6 +159,8 @@ th.gcol.gotw{box-shadow:inset 0 -4px 0 var(--accent)}
 .cell.hit{background:var(--hit-bg); box-shadow:inset 0 0 0 2px var(--hit)}
 .cell.miss{background:var(--miss-bg)}
 .cell.miss img{opacity:.2; filter:grayscale(1)}
+.cell.nopick{background:repeating-linear-gradient(-45deg,#F3F7FA,#F3F7FA 5px,#E7EEF3 5px,#E7EEF3 10px);
+  color:var(--ink-3); font-weight:800; font-size:17px}
 .tiecol{width:88px; min-width:88px; border-left:2px solid var(--line)}
 .tieval{font-weight:800; font-size:17px; font-variant-numeric:tabular-nums}
 .tieoff{font-weight:700; font-size:13px; color:var(--ink-3)}
@@ -3431,6 +3433,13 @@ function weekView(w){
              + '</b><span>'+esc(r.e.who)+'</span></div></td>';
         w.games.forEach(g=>{
           const ab = r.e.picks[g.id], res = resultsOf(w)[g.id];
+          /* a game that had kicked off before the sheet came in has no pick on
+             it -- show the gap rather than trying to read a team out of it */
+          if(!ab){
+            tds += '<td class="gcol"><div class="cell nopick" title="No pick on this sheet'
+                 + ' \u2014 the game had kicked off before it was sent">&mdash;</div></td>';
+            return;
+          }
           const state = !res ? '' : (res===ab ? ' hit' : ' miss');
           tds += '<td class="gcol"><div class="cell'+state+'"><img src="'+LOGOS[ab]+'" alt="'+ab+'" title="'+TEAMS[ab].c+' '+TEAMS[ab].n+'"></div></td>';
         });
@@ -3442,9 +3451,10 @@ function weekView(w){
     + '</tbody><tfoot><tr>'
     + '<td class="c-rank"></td><td class="c-team foot-lbl">Everyone picked</td>'
     + w.games.map(g=>{
-        const all = roster(w);
+        /* only the sheets that picked this game count towards the split */
+        const all = roster(w).filter(p => p.picks[g.id]);
         const homeN = all.filter(p => p.picks[g.id]===g.h).length;
-        const pct = Math.round(homeN/all.length*100);
+        const pct = all.length ? Math.round(homeN/all.length*100) : 50;
         const lead = pct>=50 ? g.h : g.a, leadPct = pct>=50 ? pct : 100-pct;
         return '<td class="gcol"><div class="consensus"><div class="cbar">'
           + '<i style="width:'+(100-pct)+'%;background:'+TEAMS[g.a].p+'"></i>'

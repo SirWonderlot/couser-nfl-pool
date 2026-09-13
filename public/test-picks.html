@@ -3207,13 +3207,23 @@ go.addEventListener('click', async ()=>{
                       : {ok:false, message:'There was nothing to send.'};
   go.textContent = label; refresh(); drawEntries();
 
-  document.getElementById('receipt-list').innerHTML = GAMES.map(g=>{
+  /* A game that has already kicked off cannot be picked here, so a sheet sent
+     on Sunday morning is quite normally missing one or two. Only list what was
+     actually picked -- reading a team off an empty game used to throw, which
+     killed the receipt even though the sheet had gone through. */
+  const picked = GAMES.filter(g => picks[g.id]);
+  const missed = GAMES.filter(g => !picks[g.id]);
+  document.getElementById('receipt-list').innerHTML = picked.map(g=>{
     const ab = picks[g.id];
     return '<li><img src="'+LOGOS[ab]+'" alt=""><b>'+TEAMS[ab].n+'</b> over '+TEAMS[ab===g.a?g.h:g.a].n+'</li>';
   }).join('');
   document.getElementById('receipt-line').textContent =
-    document.getElementById('f-team').value.trim()+' \u2014 '+GAMES.length
-    +' games picked, Game of the Week total of '+tie.value+'.';
+    document.getElementById('f-team').value.trim()+' \u2014 '
+    + (missed.length ? picked.length+' of '+GAMES.length : String(GAMES.length))
+    + ' games picked, Game of the Week total of '+tie.value+'.'
+    + (missed.length ? ' The other '+(missed.length>1?missed.length+' games had':'game had')
+        + ' already kicked off, so '+(missed.length>1?'they are':'it is')+' not on this sheet'
+        + ' \u2014 send '+(missed.length>1?'those':'that')+' to Sue direct if you have not already.' : '');
   const keep = document.getElementById('receipt-keep');
   keep.className = 'receipt__keep' + (sent.ok ? '' : ' warn');
   keep.innerHTML = sent.ok
